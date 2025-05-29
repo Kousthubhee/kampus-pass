@@ -1,11 +1,35 @@
-
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Languages, Play, Volume2, BookOpen, Award } from 'lucide-react';
 
 export const LanguagePage = () => {
   const [selectedLesson, setSelectedLesson] = useState(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+
+  useEffect(() => {
+    const synth = window.speechSynthesis;
+    const loadVoices = () => {
+      const availableVoices = synth.getVoices();
+      setVoices(availableVoices);
+    };
+    loadVoices();
+    if (synth.onvoiceschanged !== undefined) {
+      synth.onvoiceschanged = loadVoices;
+    }
+  }, []);
+
+  const speakText = (text: string) => {
+    if ('speechSynthesis' in window) {
+      const synth = window.speechSynthesis;
+      const frenchVoice = voices.find(voice => voice.lang === 'fr-FR');
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'fr-FR';
+      if (frenchVoice) utterance.voice = frenchVoice;
+      synth.cancel();
+      synth.speak(utterance);
+    }
+  };
 
   const lessons = [
     {
@@ -111,7 +135,7 @@ export const LanguagePage = () => {
                       {phrase.english}
                     </div>
                     <div className="flex space-x-2">
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" onClick={() => speakText(phrase.french)}>
                         <Volume2 className="h-4 w-4 mr-2" />
                         Listen
                       </Button>
