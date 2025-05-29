@@ -18,6 +18,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
+  SidebarHeader,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 
@@ -40,6 +41,20 @@ export const AppSidebar = ({ currentPage, setCurrentPage }: AppSidebarProps) => 
 
   return (
     <Sidebar>
+      <SidebarHeader>
+        <div className="p-4">
+          <div 
+            className="text-xl font-bold cursor-pointer hover:scale-105 transition-transform"
+            onClick={() => setCurrentPage('checklist')}
+          >
+            pas<span className="text-cyan-600">S</span>2<span className="text-blue-600">K</span>ampus
+          </div>
+          <div className="text-xs text-gray-600 mt-1">
+            Your guide to French education
+          </div>
+        </div>
+      </SidebarHeader>
+      
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
