@@ -12,7 +12,6 @@ export const TranslatePage = () => {
   const [targetLanguage, setTargetLanguage] = useState('fr');
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [autoSpeak, setAutoSpeak] = useState(true); // Toggle for automatic speech
 
   const languages = [
     { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -89,7 +88,7 @@ export const TranslatePage = () => {
     setTranslatedText(phrase.french);
   };
 
-  // 🔄 Auto-translate on input/language change
+  // Auto-translate on input/language change
   useEffect(() => {
     const translate = () => {
       if (sourceText.trim()) {
@@ -102,13 +101,6 @@ export const TranslatePage = () => {
     translate();
   }, [sourceText, sourceLanguage, targetLanguage]);
 
-  // 🔊 Auto-speak after translation
-  useEffect(() => {
-    if (autoSpeak && translatedText.trim()) {
-      handleTextToSpeech(translatedText, targetLanguage);
-    }
-  }, [translatedText]);
-
   return (
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-8">
@@ -119,17 +111,6 @@ export const TranslatePage = () => {
         <p className="text-lg text-gray-600">
           Real-time translation to help you communicate in French
         </p>
-        <div className="mt-4">
-          <label className="inline-flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={autoSpeak}
-              onChange={() => setAutoSpeak(!autoSpeak)}
-              className="form-checkbox text-cyan-600"
-            />
-            <span className="text-sm text-gray-700">Auto-speak translation</span>
-          </label>
-        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -145,7 +126,7 @@ export const TranslatePage = () => {
             languages={languages}
             isListening={isListening}
             isSpeaking={isSpeaking}
-            onTranslate={() => {}} // no longer needed
+            onTranslate={() => {}}
             onSwapLanguages={handleSwapLanguages}
             onSpeechToText={handleSpeechToText}
             onTextToSpeech={handleTextToSpeech}
