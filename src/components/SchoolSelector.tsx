@@ -15,6 +15,7 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
     paris: {
       name: 'Paris',
       description: 'The capital city with numerous prestigious business schools',
+      emoji: '🏛️',
       schools: [
         {
           id: 'hec-paris',
@@ -23,8 +24,7 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
           location: 'Jouy-en-Josas',
           ranking: '#1 in France',
           programs: ['MBA', 'Grande École', 'Executive Education'],
-          tuition: '€47,000 - €89,000',
-          imageUrl: 'https://upload.wikimedia.org/wikipedia/en/3/34/HEC_Paris_logo.svg'
+          tuition: '€47,000 - €89,000'
         },
         {
           id: 'essec',
@@ -33,8 +33,7 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
           location: 'Cergy-Pontoise',
           ranking: '#2 in France',
           programs: ['Grande École', 'MBA', 'Master in Management'],
-          tuition: '€39,000 - €75,000',
-          imageUrl: 'https://upload.wikimedia.org/wikipedia/en/b/bf/ESSEC_Business_School_Logo.svg'
+          tuition: '€39,000 - €75,000'
         },
         {
           id: 'escp',
@@ -43,56 +42,14 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
           location: 'Paris',
           ranking: '#3 in France',
           programs: ['Master in Management', 'MBA', 'Executive MBA'],
-          tuition: '€35,000 - €65,000',
-          imageUrl: 'https://upload.wikimedia.org/wikipedia/en/9/9a/ESCP_Europe_logo.svg'
-        }
-      ]
-    },
-    lyon: {
-      name: 'Lyon',
-      description: 'France\'s gastronomic capital with excellent business schools',
-      schools: [
-        {
-          id: 'emlyon',
-          name: 'emlyon business school',
-          description: 'Leading school for entrepreneurship and innovation',
-          location: 'Lyon/Paris',
-          ranking: '#4 in France',
-          programs: ['Grande École', 'Global MBA', 'Executive Education'],
-          tuition: '€36,000 - €72,000',
-          imageUrl: 'https://upload.wikimedia.org/wikipedia/en/5/5d/EMLYON_logo.svg'
-        },
-        {
-          id: 'skema-lyon',
-          name: 'SKEMA Business School',
-          description: 'Global business school with multiple campuses',
-          location: 'Lyon',
-          ranking: '#7 in France',
-          programs: ['Master in Management', 'MBA', 'MSc Programs'],
-          tuition: '€28,000 - €55,000',
-          imageUrl: 'https://upload.wikimedia.org/wikipedia/en/e/e4/SKEMA_Business_School_logo.svg'
-        }
-      ]
-    },
-    reims: {
-      name: 'Reims',
-      description: 'Historic city in Champagne region with top business schools',
-      schools: [
-        {
-          id: 'neoma',
-          name: 'NEOMA Business School',
-          description: 'Result of merger between Reims MS and Rouen BS',
-          location: 'Reims/Rouen/Paris',
-          ranking: '#6 in France',
-          programs: ['Grande École', 'Global MBA', 'Master in Management'],
-          tuition: '€32,000 - €62,000',
-          imageUrl: 'https://upload.wikimedia.org/wikipedia/en/8/83/NEOMA_Business_School_Logo.svg'
+          tuition: '€35,000 - €65,000'
         }
       ]
     },
     rouen: {
       name: 'Rouen',
       description: 'Historic Normandy city and home to top-tier business schools',
+      emoji: '🏫',
       schools: [
         {
           id: 'neoma-rouen',
@@ -101,8 +58,7 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
           location: 'Rouen',
           ranking: '#6 in France',
           programs: ['Grande École', 'MSc in Business Analytics', 'Executive MBA'],
-          tuition: '€32,000 - €62,000',
-          imageUrl: 'https://upload.wikimedia.org/wikipedia/en/8/83/NEOMA_Business_School_Logo.svg'
+          tuition: '€32,000 - €62,000'
         },
         {
           id: 'inseec-rouen',
@@ -111,40 +67,7 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
           location: 'Rouen',
           ranking: '#14 in France',
           programs: ['Bachelor', 'Master in Management'],
-          tuition: '€18,000 - €35,000',
-          imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/df/Logo_INSEEC_U_group_2020.svg'
-        }
-      ]
-    },
-    nice: {
-      name: 'Nice',
-      description: 'Mediterranean city with international business programs',
-      schools: [
-        {
-          id: 'ipag-nice',
-          name: 'IPAG Business School',
-          description: 'Global business outlook with focus on innovation',
-          location: 'Nice',
-          ranking: '#15 in France',
-          programs: ['BBA', 'MSc', 'DBA'],
-          tuition: '€20,000 - €45,000',
-          imageUrl: 'https://upload.wikimedia.org/wikipedia/en/2/2a/IPAG_Business_School_logo.png'
-        }
-      ]
-    },
-    toulouse: {
-      name: 'Toulouse',
-      description: 'Aerospace hub with elite business education options',
-      schools: [
-        {
-          id: 'tbs',
-          name: 'Toulouse Business School',
-          description: 'Triple-accredited school with global recognition',
-          location: 'Toulouse',
-          ranking: '#8 in France',
-          programs: ['Grande École', 'MSc', 'Global MBA'],
-          tuition: '€30,000 - €58,000',
-          imageUrl: 'https://upload.wikimedia.org/wikipedia/en/1/13/Toulouse_Business_School_logo.svg'
+          tuition: '€18,000 - €35,000'
         }
       ]
     }
@@ -174,7 +97,6 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
             >
               <CardContent className="p-6">
                 <div className="text-center mb-4">
-                  <img src={school.imageUrl} alt={school.name} className="h-16 mx-auto mb-2" />
                   <h3 className="text-lg font-semibold text-gray-900">{school.name}</h3>
                   <p className="text-sm text-gray-600 mt-1">{school.description}</p>
                 </div>
@@ -238,7 +160,7 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
           >
             <CardContent className="p-6">
               <div className="h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg mb-4 flex items-center justify-center">
-                <div className="text-white text-xl font-bold">{city.name}</div>
+                <div className="text-4xl">{city.emoji}</div>
               </div>
 
               <h3 className="text-lg font-semibold text-gray-900 mb-2">{city.name}</h3>
