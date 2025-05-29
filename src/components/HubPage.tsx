@@ -1,106 +1,280 @@
-import { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Video, Upload, Share2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  Users, User, Calendar, MessageCircle,
+  ThumbsUp, Send, Camera
+} from 'lucide-react';
+import Button from '../../components/ui/Button';
 
-export const ReelsPage = () => {
-  const [reels, setReels] = useState([]);
-  const [file, setFile] = useState<File | null>(null);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('Arrival');
+interface Discussion {
+  id: number;
+  category: string;
+  author: string;
+  title: string;
+  content: string;
+  timestamp: string;
+  likes: number;
+  comments: number;
+}
 
-  const handleUpload = () => {
-    if (file && title) {
-      const newReel = {
+const initialDiscussions: Discussion[] = [
+  {
+    id: 1,
+    category: 'askSeniors',
+    author: 'Priya Sharma',
+    title: 'How is the student life at NEOMA Reims?',
+    content: 'I got admitted to NEOMA Business School at Reims campus. Can seniors share their experiences about accommodation, social life, and academics there?',
+    timestamp: '2 hours ago',
+    likes: 12,
+    comments: 8,
+  },
+  {
+    id: 2,
+    category: 'experiences',
+    author: 'Rahul Jain',
+    title: 'My first month in Paris - The ups and downs',
+    content: 'It\'s been a month since I arrived in Paris to study at ESSEC. Here\'s what I\'ve learned about finding accommodation, dealing with paperwork, and making friends.',
+    timestamp: '1 day ago',
+    likes: 45,
+    comments: 22,
+  },
+  {
+    id: 3,
+    category: 'resources',
+    author: 'Ananya Patel',
+    title: 'List of useful apps for Indian students in France',
+    content: 'I\'ve compiled a list of essential apps that helped me navigate life in France - from transportation to food delivery to language learning.',
+    timestamp: '3 days ago',
+    likes: 78,
+    comments: 14,
+  },
+  {
+    id: 4,
+    category: 'askSeniors',
+    author: 'Vikram Singh',
+    title: 'Job opportunities after MSc Finance in France',
+    content: 'I\'m considering applying for MSc Finance programs in France. Can anyone share insights about job prospects for international students after graduation?',
+    timestamp: '5 days ago',
+    likes: 32,
+    comments: 18,
+  },
+  {
+    id: 5,
+    category: 'experiences',
+    author: 'Neha Gupta',
+    title: 'Weekend trips from Lyon - My adventures',
+    content: 'Since starting my studies at emlyon in Lyon, I\'ve been exploring nearby cities on weekends. Here are some affordable and amazing places to visit!',
+    timestamp: '1 week ago',
+    likes: 61,
+    comments: 26,
+  },
+];
+
+const HubPage: React.FC = () => {
+  const [activeTab, setActiveTab] = useState('all');
+  const [inputValue, setInputValue] = useState('');
+  const [discussionList, setDiscussionList] = useState<Discussion[]>(initialDiscussions);
+  const [showReelModal, setShowReelModal] = useState(false);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [reels, setReels] = useState<{ id: number, url: string }[]>([]);
+
+  const filteredDiscussions = activeTab === 'all'
+    ? discussionList
+    : discussionList.filter(disc => disc.category === activeTab);
+
+  const handlePostDiscussion = () => {
+    if (inputValue.trim()) {
+      const newPost: Discussion = {
         id: Date.now(),
-        fileURL: URL.createObjectURL(file),
-        title,
-        description,
-        category,
+        category: activeTab === 'all' ? 'experiences' : activeTab,
+        author: 'You',
+        title: 'New Discussion',
+        content: inputValue.trim(),
+        timestamp: 'Just now',
+        likes: 0,
+        comments: 0,
       };
-      setReels([newReel, ...reels]);
-      setFile(null);
-      setTitle('');
-      setDescription('');
-      setCategory('Arrival');
+      setDiscussionList([newPost, ...discussionList]);
+      setInputValue('');
+    }
+  };
+
+  const handleLikeToggle = (id: number) => {
+    setDiscussionList(prev =>
+      prev.map(d =>
+        d.id === id ? { ...d, likes: d.likes + 1 } : d
+      )
+    );
+  };
+
+  const handleCreateReel = () => {
+    setShowReelModal(true);
+  };
+
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('video/')) {
+      setVideoFile(file);
+    }
+  };
+
+  const handleSaveReel = () => {
+    if (videoFile) {
+      const videoURL = URL.createObjectURL(videoFile);
+      setReels([{ id: Date.now(), url: videoURL }, ...reels]);
+      setVideoFile(null);
+      setShowReelModal(false);
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 flex items-center justify-center mb-2">
-          <Video className="h-8 w-8 mr-3 text-pink-600" />
-          Share a Reel
-        </h1>
-        <p className="text-gray-600">Upload short clips to share your student life in France</p>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="page-container"
+    >
+      <div className="section-title">
+        <Users size={24} />
+        Student Community Hub
       </div>
 
-      <Card className="mb-8">
-        <CardContent className="p-6 space-y-4">
-          <input 
-            type="file" 
-            accept="video/*"
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
-            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border file:rounded file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100"
-          />
-          <input 
-            type="text" 
-            placeholder="Reel Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-2 border border-gray-200 rounded"
-          />
-          <textarea 
-            placeholder="Write a short description or story..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full p-2 border border-gray-200 rounded resize-none"
-            rows={3}
-          />
-          <select 
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full p-2 border border-gray-200 rounded"
-          >
-            <option value="Arrival">Arrival</option>
-            <option value="Campus Life">Campus Life</option>
-            <option value="Food & Culture">Food & Culture</option>
-            <option value="Housing">Housing</option>
-            <option value="Visa & Docs">Visa & Docs</option>
-          </select>
+      <div className="bg-white rounded-xl shadow-md overflow-hidden">
+        {/* Categories */}
+        <div className="border-b border-gray-200">
+          <div className="flex overflow-x-auto">
+            {['all', 'askSeniors', 'experiences', 'resources'].map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-3 text-sm font-medium whitespace-nowrap ${
+                  activeTab === tab
+                    ? 'border-b-2 border-primary-500 text-primary-600'
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                {tab === 'all' ? 'All Discussions' :
+                 tab === 'askSeniors' ? 'Ask Seniors' :
+                 tab === 'experiences' ? 'Share Experiences' : 'Resources'}
+              </button>
+            ))}
+          </div>
+        </div>
 
-          <Button onClick={handleUpload} className="w-full bg-pink-600 hover:bg-pink-700">
-            <Upload className="h-4 w-4 mr-2" />
-            Upload Reel
-          </Button>
-        </CardContent>
-      </Card>
-
-      {reels.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {reels.map((reel) => (
-            <Card key={reel.id} className="overflow-hidden">
-              <video controls className="w-full h-64 object-cover bg-black">
-                <source src={reel.fileURL} type="video/mp4" />
-                Your browser does not support video.
-              </video>
-              <CardContent className="p-4 space-y-2">
-                <h3 className="text-lg font-semibold text-gray-800">{reel.title}</h3>
-                <p className="text-sm text-gray-600">{reel.description}</p>
-                <span className="text-xs bg-pink-100 text-pink-800 px-2 py-1 rounded">{reel.category}</span>
-                <div className="flex justify-end">
-                  <Button size="sm" variant="outline">
-                    <Share2 className="h-4 w-4 mr-2" />
-                    Share
+        {/* New Discussion Input */}
+        <div className="p-4 border-b border-gray-200">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
+              <User size={20} className="text-primary-600" />
+            </div>
+            <div className="flex-1">
+              <textarea
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Share your question or experience..."
+                className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-transparent min-h-[100px]"
+              />
+              <div className="flex justify-between mt-2">
+                {activeTab === 'experiences' && (
+                  <Button
+                    onClick={handleCreateReel}
+                    variant="outline"
+                    leftIcon={<Camera size={16} />}
+                  >
+                    Create Reel
                   </Button>
+                )}
+                <Button
+                  onClick={handlePostDiscussion}
+                  rightIcon={<Send size={16} />}
+                >
+                  Post
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Discussion List */}
+        <div className="divide-y divide-gray-200">
+          {filteredDiscussions.map((discussion) => (
+            <div key={discussion.id} className="p-4 hover:bg-gray-50 transition-colors">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
+                  <User size={20} className="text-primary-600" />
                 </div>
-              </CardContent>
-            </Card>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-medium text-gray-900">{discussion.author}</span>
+                    <span className="text-xs text-gray-500 flex items-center">
+                      <Calendar size={12} className="mr-1" />
+                      {discussion.timestamp}
+                    </span>
+                  </div>
+                  <h3 className="font-semibold text-gray-800 mb-2">{discussion.title}</h3>
+                  <p className="text-gray-600 text-sm mb-3">{discussion.content}</p>
+                  <div className="flex items-center gap-4 text-sm text-gray-500">
+                    <button
+                      onClick={() => handleLikeToggle(discussion.id)}
+                      className="flex items-center gap-1 hover:text-primary-600"
+                    >
+                      <ThumbsUp size={16} />
+                      <span>{discussion.likes}</span>
+                    </button>
+                    <button className="flex items-center gap-1 hover:text-primary-600">
+                      <MessageCircle size={16} />
+                      <span>{discussion.comments}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
+      </div>
+
+      {/* Reel Modal */}
+      {showReelModal && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-lg font-semibold mb-4">Upload a Reel</h2>
+            <input
+              type="file"
+              accept="video/*"
+              onChange={handleVideoChange}
+              className="mb-4"
+            />
+            {videoFile && (
+              <video
+                src={URL.createObjectURL(videoFile)}
+                controls
+                className="w-full mb-4 rounded-md"
+              />
+            )}
+            <div className="flex justify-end gap-3">
+              <Button variant="outline" onClick={() => setShowReelModal(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleSaveReel} disabled={!videoFile}>
+                Save Reel
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
-    </div>
+
+      {/* Reel Gallery */}
+      {reels.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Your Reels</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {reels.map(reel => (
+              <video key={reel.id} src={reel.url} controls className="rounded-lg w-full" />
+            ))}
+          </div>
+        </div>
+      )}
+    </motion.div>
   );
 };
+
+export default HubPage;
