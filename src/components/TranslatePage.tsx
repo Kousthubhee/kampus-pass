@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Languages } from 'lucide-react';
 import { TranslationForm } from './translate/TranslationForm';
@@ -13,6 +12,7 @@ export const TranslatePage = () => {
   const [targetLanguage, setTargetLanguage] = useState('fr');
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [autoSpeak, setAutoSpeak] = useState(true); // Toggle for automatic speech
 
   const languages = [
     { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -30,12 +30,6 @@ export const TranslatePage = () => {
     { english: 'What time is it?', french: 'Quelle heure est-il?' },
     { english: 'I would like to order', french: 'Je voudrais commander' }
   ];
-
-  const handleTranslate = () => {
-    if (sourceText.trim()) {
-      setTranslatedText(`[Translated] ${sourceText}`);
-    }
-  };
 
   const handleSwapLanguages = () => {
     setSourceLanguage(targetLanguage);
@@ -57,40 +51,27 @@ export const TranslatePage = () => {
   const handleTextToSpeech = (text: string, language: string) => {
     if ('speechSynthesis' in window) {
       setIsSpeaking(true);
-      
+
       window.speechSynthesis.cancel();
-      
+
       const utterance = new SpeechSynthesisUtterance(text);
-      
-      switch (language) {
-        case 'fr':
-          utterance.lang = 'fr-FR';
-          break;
-        case 'es':
-          utterance.lang = 'es-ES';
-          break;
-        case 'de':
-          utterance.lang = 'de-DE';
-          break;
-        case 'it':
-          utterance.lang = 'it-IT';
-          break;
-        default:
-          utterance.lang = 'en-US';
-      }
-      
+      utterance.lang = {
+        fr: 'fr-FR',
+        es: 'es-ES',
+        de: 'de-DE',
+        it: 'it-IT',
+        en: 'en-US'
+      }[language] || 'en-US';
+
       utterance.rate = 0.8;
       utterance.pitch = 1;
-      
-      utterance.onend = () => {
-        setIsSpeaking(false);
-      };
-      
+
+      utterance.onend = () => setIsSpeaking(false);
       utterance.onerror = () => {
         setIsSpeaking(false);
         console.error('Speech synthesis error');
       };
-      
+
       window.speechSynthesis.speak(utterance);
     } else {
       alert('Speech synthesis is not supported in your browser');
@@ -108,6 +89,26 @@ export const TranslatePage = () => {
     setTranslatedText(phrase.french);
   };
 
+  // 🔄 Auto-translate on input/language change
+  useEffect(() => {
+    const translate = () => {
+      if (sourceText.trim()) {
+        setTranslatedText(`[Translated] ${sourceText}`);
+      } else {
+        setTranslatedText('');
+      }
+    };
+
+    translate();
+  }, [sourceText, sourceLanguage, targetLanguage]);
+
+  // 🔊 Auto-speak after translation
+  useEffect(() => {
+    if (autoSpeak && translatedText.trim()) {
+      handleTextToSpeech(translatedText, targetLanguage);
+    }
+  }, [translatedText]);
+
   return (
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-8">
@@ -118,6 +119,17 @@ export const TranslatePage = () => {
         <p className="text-lg text-gray-600">
           Real-time translation to help you communicate in French
         </p>
+        <div className="mt-4">
+          <label className="inline-flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={autoSpeak}
+              onChange={() => setAutoSpeak(!autoSpeak)}
+              className="form-checkbox text-cyan-600"
+            />
+            <span className="text-sm text-gray-700">Auto-speak translation</span>
+          </label>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -133,7 +145,7 @@ export const TranslatePage = () => {
             languages={languages}
             isListening={isListening}
             isSpeaking={isSpeaking}
-            onTranslate={handleTranslate}
+            onTranslate={() => {}} // no longer needed
             onSwapLanguages={handleSwapLanguages}
             onSpeechToText={handleSpeechToText}
             onTextToSpeech={handleTextToSpeech}
