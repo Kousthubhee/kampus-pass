@@ -27,6 +27,8 @@ interface SchoolSelectorProps {
 
 export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) => {
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
 
   const cities: Record<string, City> = {
     paris: {
@@ -151,6 +153,24 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
     }
   };
 
+  if (selectedSchool) {
+    return (
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center mb-6">
+          <Button variant="ghost" onClick={() => setSelectedSchool(null)} className="mr-4">
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back to Schools
+          </Button>
+          <h1 className="text-2xl font-bold text-gray-900">{selectedSchool.name}</h1>
+        </div>
+        <div className="p-4 text-gray-700">
+          <p className="mb-2"><strong>Description:</strong> {selectedSchool.description}</p>
+          <p className="mb-2"><strong>Location:</strong> {selectedSchool.location}</p>
+          <p className="mb-2"><strong>Programs:</strong> {selectedSchool.programs.join(', ')}</p>
+        </div>
+      </div>
+    );
+  }
+
   if (selectedCity && cities[selectedCity]) {
     const cityData = cities[selectedCity];
     return (
@@ -164,7 +184,7 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {cityData.schools.map((school) => (
-            <Card key={school.id} className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105" onClick={() => onSchoolSelect(school)}>
+            <Card key={school.id} className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105" onClick={() => setSelectedSchool(school)}>
               <CardContent className="p-6 break-words">
                 <div className="text-center mb-4">
                   <h3 className="text-lg font-semibold text-gray-900">{school.name}</h3>
