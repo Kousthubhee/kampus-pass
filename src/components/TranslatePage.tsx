@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { useState, useEffect, useRef } from 'react';
 import { Languages } from 'lucide-react';
 import { TranslationForm } from './translate/TranslationForm';
 import { CommonPhrases } from './translate/CommonPhrases';
@@ -12,6 +11,7 @@ export const TranslatePage = () => {
   const [targetLanguage, setTargetLanguage] = useState('fr');
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const recognitionRef = useRef<any>(null);
 
   const languages = [
     { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -30,6 +30,74 @@ export const TranslatePage = () => {
     { english: 'I would like to order', french: 'Je voudrais commander' }
   ];
 
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = 'en-US';
+
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = Array.from(event.results)
+          .map((result: any) => result[0])
+          .map((result) => result.transcript)
+          .join('');
+
+        setSourceText(transcript);
+        simulateTranslation(transcript);
+      };
+
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error', event.error);
+        setIsListening(false);
+      };
+    }
+
+    return () => {
+      recognitionRef.current?.stop();
+    };
+  }, []);
+
+  const simulateTranslation = (text: string) => {
+    const frenchPhrases: Record<string, string> = {
+      'hello': 'Bonjour',
+      'good morning': 'Bon matin',
+      'how are you': 'Comment allez-vous',
+      'thank you': 'Merci',
+      'goodbye': 'Au revoir',
+      'my name is': 'Je m\'appelle',
+      'where is': 'Où est',
+      'how much': 'Combien',
+      'help': 'Aidez-moi',
+      'please': 's\'il vous plaît',
+      'excuse me': 'Excusez-moi',
+      'sorry': 'Désolé',
+      'yes': 'Oui',
+      'no': 'Non',
+      'i would like': 'Je voudrais',
+      'restaurant': 'restaurant',
+      'food': 'nourriture',
+      'water': 'eau',
+      'toilet': 'toilettes'
+    };
+
+    let translated = text.toLowerCase();
+
+    Object.entries(frenchPhrases).forEach(([english, french]) => {
+      const regex = new RegExp(`\\b${english}\\b`, 'gi');
+      translated = translated.replace(regex, french);
+    });
+
+    setTranslatedText(translated);
+  };
+
+  const handleTranslate = () => {
+    if (sourceText.trim()) {
+      simulateTranslation(sourceText);
+    }
+  };
+
   const handleSwapLanguages = () => {
     setSourceLanguage(targetLanguage);
     setTargetLanguage(sourceLanguage);
@@ -38,12 +106,16 @@ export const TranslatePage = () => {
   };
 
   const handleSpeechToText = () => {
-    setIsListening(!isListening);
-    if (!isListening) {
-      setTimeout(() => {
-        setSourceText('Hello, how are you?');
-        setIsListening(false);
-      }, 2000);
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+    } else {
+      try {
+        recognitionRef.current?.start();
+        setIsListening(true);
+      } catch (error) {
+        console.error('Speech recognition error:', error);
+      }
     }
   };
 
@@ -52,10 +124,9 @@ export const TranslatePage = () => {
 
     if ('speechSynthesis' in window) {
       setIsSpeaking(true);
-
       window.speechSynthesis.cancel();
 
-      const utterance = new SpeechSynthesisUtterance(text);
+      const utterance = new SpeechSynthesisUtterance(text.trim());
       utterance.lang = {
         fr: 'fr-FR',
         es: 'es-ES',
@@ -64,20 +135,21 @@ export const TranslatePage = () => {
         en: 'en-US'
       }[language] || 'en-US';
 
-      utterance.rate = 0.8;
-      utterance.pitch = 1;
+      const voices = window.speechSynthesis.getVoices();
+      const match = voices.find(v => v.lang.startsWith(utterance.lang));
+      if (match) utterance.voice = match;
 
       utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = (event) => {
+      utterance.onerror = (e) => {
+        console.error('Speech synthesis error:', e.error);
         setIsSpeaking(false);
-        console.error('Speech synthesis error:', event.error);
       };
 
       setTimeout(() => {
         window.speechSynthesis.speak(utterance);
       }, 150);
     } else {
-      alert('Speech synthesis is not supported in your browser');
+      alert('Speech synthesis not supported in this browser.');
     }
   };
 
@@ -92,19 +164,6 @@ export const TranslatePage = () => {
     setTranslatedText(phrase.french);
   };
 
-  // Auto-translate on input/language change
-  useEffect(() => {
-    const translate = () => {
-      if (sourceText.trim()) {
-        setTranslatedText(`[Translated] ${sourceText}`);
-      } else {
-        setTranslatedText('');
-      }
-    };
-
-    translate();
-  }, [sourceText, sourceLanguage, targetLanguage]);
-
   return (
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-8">
@@ -113,7 +172,7 @@ export const TranslatePage = () => {
           Translate
         </h1>
         <p className="text-lg text-gray-600">
-          Real-time translation to help you communicate in French
+          Real-time voice and text translation from English to French
         </p>
       </div>
 
@@ -130,7 +189,7 @@ export const TranslatePage = () => {
             languages={languages}
             isListening={isListening}
             isSpeaking={isSpeaking}
-            onTranslate={() => {}}
+            onTranslate={handleTranslate}
             onSwapLanguages={handleSwapLanguages}
             onSpeechToText={handleSpeechToText}
             onTextToSpeech={handleTextToSpeech}
