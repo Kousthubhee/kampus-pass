@@ -28,7 +28,6 @@ interface SchoolSelectorProps {
 export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) => {
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
-  const [selectedCity, setSelectedCity] = useState<string | null>(null);
 
   const cities: Record<string, City> = {
     paris: {
