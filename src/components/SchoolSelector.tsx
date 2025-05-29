@@ -80,7 +80,75 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
         { id: 'esigelec', name: 'ESIGELEC Rouen', description: 'Electronics and digital tech', location: 'Rouen', programs: ['Engineering'] }
       ]
     },
-    // Remaining cities: Reims, Lille, Strasbourg, Bordeaux, Nice, Marseille can be appended similarly.
+    reims: {
+      name: 'Reims',
+      description: 'Business and international affairs education hub',
+      emoji: '🇫🇷',
+      schools: [
+        { id: 'neoma-reims', name: 'NEOMA Business School (Reims)', description: 'Core business programs', location: 'Reims', programs: ['Business', 'MBA', 'MSc'] },
+        { id: 'sciencespo-reims', name: 'Sciences Po Campus Reims', description: 'International program focus', location: 'Reims', programs: ['Politics', 'Global Affairs'] },
+        { id: 'reims-univ', name: 'Université de Reims Champagne-Ardenne', description: 'Regional public university', location: 'Reims', programs: ['Various'] },
+        { id: 'esiec', name: 'ESIEC Reims', description: 'Packaging and digital engineering', location: 'Reims', programs: ['Engineering'] }
+      ]
+    },
+    lille: {
+      name: 'Lille',
+      description: 'Northern hub for business and engineering education',
+      emoji: '🇫🇷',
+      schools: [
+        { id: 'lille-univ', name: 'Université de Lille', description: 'Large multidisciplinary public university', location: 'Lille', programs: ['Various'] },
+        { id: 'edhec-lille', name: 'EDHEC Business School', description: 'Top 5 French business school', location: 'Lille', programs: ['MBA', 'MSc', 'Finance'] },
+        { id: 'centrale-lille', name: 'École Centrale de Lille', description: 'Elite engineering school', location: 'Lille', programs: ['Engineering'] },
+        { id: 'ieseg', name: 'IESEG School of Management', description: 'AACSB-accredited Grande École', location: 'Lille', programs: ['Management', 'MSc'] },
+        { id: 'hei', name: 'HEI – Hautes Études d\'Ingénieur', description: 'Private engineering school', location: 'Lille', programs: ['Engineering'] }
+      ]
+    },
+    strasbourg: {
+      name: 'Strasbourg',
+      description: 'Prestigious academic and international region',
+      emoji: '🇫🇷',
+      schools: [
+        { id: 'strasbourg-univ', name: 'Université de Strasbourg', description: 'Prestigious university, strong in sciences and humanities', location: 'Strasbourg', programs: ['Science', 'Humanities'] },
+        { id: 'insa-strasbourg', name: 'INSA Strasbourg', description: 'Part of the INSA engineering network', location: 'Strasbourg', programs: ['Engineering'] },
+        { id: 'em-strasbourg', name: 'EM Strasbourg Business School', description: 'Business school within the university', location: 'Strasbourg', programs: ['Business'] },
+        { id: 'sciencespo-strasbourg', name: 'Sciences Po Strasbourg', description: 'Regional campus of Sciences Po', location: 'Strasbourg', programs: ['Politics'] }
+      ]
+    },
+    bordeaux: {
+      name: 'Bordeaux',
+      description: 'Southwest academic powerhouse in sciences and business',
+      emoji: '🇫🇷',
+      schools: [
+        { id: 'bordeaux-univ', name: 'Université de Bordeaux', description: 'Comprehensive research university', location: 'Bordeaux', programs: ['Science', 'Engineering'] },
+        { id: 'kedge-bordeaux', name: 'KEDGE Business School', description: 'Top-tier business school', location: 'Bordeaux', programs: ['MBA', 'MSc'] },
+        { id: 'enseirb', name: 'ENSEIRB-MATMECA', description: 'Engineering in IT, electronics, math', location: 'Bordeaux', programs: ['Engineering'] },
+        { id: 'sciencespo-bordeaux', name: 'Sciences Po Bordeaux', description: 'Political science and international studies', location: 'Bordeaux', programs: ['Politics'] },
+        { id: 'inpbordeaux', name: 'INP Bordeaux', description: 'Engineering network incl. ENSEIRB-MATMECA, ENSCBP', location: 'Bordeaux', programs: ['Engineering'] }
+      ]
+    },
+    nice: {
+      name: 'Nice',
+      description: 'Côte d’Azur region with business and engineering strengths',
+      emoji: '🇫🇷',
+      schools: [
+        { id: 'uca', name: 'Université Côte d\'Azur', description: 'Alliance of local institutions under one label', location: 'Nice', programs: ['Various'] },
+        { id: 'skema-nice', name: 'SKEMA Business School (Sophia)', description: 'Global business school with AI focus', location: 'Sophia Antipolis', programs: ['Business', 'AI'] },
+        { id: 'polytech-nice', name: 'Polytech Nice Sophia', description: 'Engineering school within UCA', location: 'Nice', programs: ['Engineering'] },
+        { id: 'edhec-nice', name: 'EDHEC Business School (Nice)', description: 'Specializes in Finance MSc and Global MBA', location: 'Nice', programs: ['Finance', 'MBA'] },
+        { id: 'mines-sophia', name: 'Mines Paris – Sophia', description: 'AI and systems engineering research campus', location: 'Sophia Antipolis', programs: ['Engineering', 'AI'] }
+      ]
+    },
+    marseille: {
+      name: 'Marseille',
+      description: 'Mediterranean port city with large academic presence',
+      emoji: '🇫🇷',
+      schools: [
+        { id: 'amu', name: 'Aix-Marseille Université', description: 'One of France’s largest public universities', location: 'Marseille', programs: ['Various'] },
+        { id: 'kedge-marseille', name: 'KEDGE Business School (Marseille)', description: 'Major business school', location: 'Marseille', programs: ['Business'] },
+        { id: 'centrale-marseille', name: 'École Centrale de Marseille', description: 'Part of the Centrale engineering group', location: 'Marseille', programs: ['Engineering'] },
+        { id: 'polytech-marseille', name: 'Polytech Marseille', description: 'Engineering programs under AMU', location: 'Marseille', programs: ['Engineering'] }
+      ]
+    }
   };
 
   if (selectedCity && cities[selectedCity]) {
@@ -97,10 +165,10 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {cityData.schools.map((school) => (
             <Card key={school.id} className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105" onClick={() => onSchoolSelect(school)}>
-              <CardContent className="p-6">
+              <CardContent className="p-6 break-words">
                 <div className="text-center mb-4">
                   <h3 className="text-lg font-semibold text-gray-900">{school.name}</h3>
-                  <p className="text-sm text-gray-600 mt-1">{school.description}</p>
+                  <p className="text-sm text-gray-600 mt-1 break-words">{school.description}</p>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center text-sm">
