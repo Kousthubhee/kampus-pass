@@ -155,7 +155,7 @@ const Index = () => {
           </main>
           <footer className="bg-white border-t border-gray-200 py-4 px-6">
             <div className="text-center text-gray-600">
-              © <span className="text-blue-600 font-semibold">Kousthubhee</span> & <span className="text-cyan-600 font-semibold">Srivatsava</span>
+              © 2025<span className="text-blue-600 font-semibold">  Kousthubhee</span> & <span className="text-cyan-600 font-semibold">Srivatsava</span>
             </div>
           </footer>
         </div>
