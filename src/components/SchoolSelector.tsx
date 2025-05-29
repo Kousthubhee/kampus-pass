@@ -316,7 +316,7 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
           <Card key={cityKey} className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105" onClick={() => setSelectedCity(cityKey)}>
             <CardContent className="p-6">
               <div className="h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg mb-4 flex items-center justify-center">
-                <div className="text-4xl">{city.emoji}</div>
+                <div className="text-xl font-bold text-white">{city.name}</div>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">{city.name}</h3>
               <p className="text-sm text-gray-600 mb-4">{city.description}</p>
