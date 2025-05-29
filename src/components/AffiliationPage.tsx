@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Building2, ExternalLink, Star, Users } from 'lucide-react';
@@ -14,7 +13,7 @@ export const AffiliationPage = () => {
       rating: 4.8,
       users: '10,000+',
       logo: '🇫🇷',
-      website: 'campusfrance.org'
+      website: 'https://www.campusfrance.org'
     },
     {
       id: 2,
@@ -25,7 +24,7 @@ export const AffiliationPage = () => {
       rating: 4.5,
       users: '500K+',
       logo: '🏢',
-      website: 'crous-paris.fr'
+      website: 'https://www.crous-paris.fr'
     },
     {
       id: 3,
@@ -36,7 +35,7 @@ export const AffiliationPage = () => {
       rating: 4.3,
       users: '2M+',
       logo: '🏥',
-      website: 'ameli.fr'
+      website: 'https://www.ameli.fr'
     },
     {
       id: 4,
@@ -47,7 +46,7 @@ export const AffiliationPage = () => {
       rating: 4.4,
       users: '1.5M+',
       logo: '💰',
-      website: 'caf.fr'
+      website: 'https://www.caf.fr'
     },
     {
       id: 5,
@@ -58,7 +57,7 @@ export const AffiliationPage = () => {
       rating: 4.2,
       users: '50K+',
       logo: '📋',
-      website: 'vfsglobal.com'
+      website: 'https://visa.vfsglobal.com'
     },
     {
       id: 6,
@@ -69,7 +68,7 @@ export const AffiliationPage = () => {
       rating: 4.6,
       users: '25K+',
       logo: '📚',
-      website: 'studyinfrance.org'
+      website: 'https://www.studyinfrance.org'
     }
   ];
 
@@ -150,10 +149,16 @@ export const AffiliationPage = () => {
                 </div>
               </div>
               
-              <Button className="w-full" size="sm" variant="outline">
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Visit {partner.website}
-              </Button>
+              <a
+                href={partner.website}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button className="w-full" size="sm" variant="outline">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Visit {new URL(partner.website).hostname}
+                </Button>
+              </a>
             </CardContent>
           </Card>
         ))}
