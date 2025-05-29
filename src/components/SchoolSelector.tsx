@@ -159,37 +159,85 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
           <Button variant="ghost" onClick={() => setSelectedSchool(null)} className="mr-4">
             <ArrowLeft className="h-4 w-4 mr-2" /> Back to Schools
           </Button>
-          <h1 className="text-2xl font-bold text-gray-900">{selectedSchool.name}</h1>
         </div>
-        <Card className="mb-6">
-          <CardContent className="p-6 space-y-4">
-            <p className="text-gray-700 text-sm">{selectedSchool.description}</p>
-            <div className="space-y-2">
-              <div className="flex items-center text-sm text-gray-800">
-                <MapPin className="h-4 w-4 text-gray-500 mr-2" />
-                {selectedSchool.location}
+
+        <div className="rounded-lg p-6 mb-6 text-white bg-gradient-to-r from-blue-600 to-purple-600">
+          <h1 className="text-3xl font-bold mb-1">{selectedSchool.name}</h1>
+          <p className="text-lg mb-1">{selectedSchool.description}</p>
+          <div className="flex items-center text-sm">
+            <MapPin className="h-4 w-4 mr-2" />
+            {selectedSchool.location}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <h2 className="font-semibold text-gray-800 text-md mb-2">🎓 Programs Offered</h2>
+              {selectedSchool.programs.map((prog) => (
+                <div key={prog} className="flex justify-between text-sm text-gray-700 border-b py-1">
+                  <span>{prog}</span>
+                  <span className="text-green-600 font-medium">Available</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <h2 className="font-semibold text-gray-800 text-md mb-2">📅 Tuition & Fees</h2>
+              <ul className="text-sm text-gray-700 list-disc ml-4 space-y-1">
+                <li>Application fee: €100–200</li>
+                <li>Living expenses: €800–1,200/month</li>
+                <li>Books & materials: €500–800/year</li>
+              </ul>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <h2 className="font-semibold text-gray-800 text-md mb-2">🌐 Admission Requirements</h2>
+              <ul className="text-sm text-gray-700 list-disc ml-4 space-y-1">
+                <li>Bachelor's degree (any field)</li>
+                <li>GMAT/GRE scores</li>
+                <li>English proficiency (TOEFL/IELTS)</li>
+                <li>Personal statement</li>
+                <li>2–3 recommendation letters</li>
+                <li>Work experience (preferred)</li>
+              </ul>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <h2 className="font-semibold text-gray-800 text-md mb-2">📞 Contact Information</h2>
+              <div className="text-sm text-gray-700 space-y-1">
+                <p><span className="font-medium">📧</span> admissions@{selectedSchool.id}.edu</p>
+                <p><span className="font-medium">📱</span> +33 1 XX XX XX XX</p>
+                <p><span className="font-medium">🌐</span> www.{selectedSchool.id}.edu</p>
               </div>
-              {selectedSchool.ranking && (
-                <div className="flex items-center text-sm text-gray-800">
-                  <Building2 className="h-4 w-4 text-gray-500 mr-2" />
-                  {selectedSchool.ranking}
-                </div>
-              )}
-              {selectedSchool.tuition && (
-                <div className="flex items-center text-sm text-gray-800">
-                  <Users className="h-4 w-4 text-gray-500 mr-2" />
-                  {selectedSchool.tuition}
-                </div>
-              )}
-            </div>
-            <div>
-              <div className="text-xs text-gray-500 mb-1">Programs Offered:</div>
-              <div className="flex flex-wrap gap-2">
-                {selectedSchool.programs.map((program) => (
-                  <span key={program} className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                    {program}
-                  </span>
-                ))}
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card className="mt-6">
+          <CardContent className="p-4">
+            <h2 className="font-semibold text-gray-800 text-md mb-3">📌 Application Deadlines</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-blue-50 p-3 rounded-lg">
+                <h3 className="font-semibold text-sm text-blue-800">Fall Intake</h3>
+                <p className="text-sm text-gray-700">September 2025</p>
+                <p className="text-xs text-gray-500">Deadline: March 15, 2025</p>
+              </div>
+              <div className="bg-green-50 p-3 rounded-lg">
+                <h3 className="font-semibold text-sm text-green-800">Spring Intake</h3>
+                <p className="text-sm text-gray-700">January 2026</p>
+                <p className="text-xs text-gray-500">Deadline: October 15, 2025</p>
+              </div>
+              <div className="bg-purple-50 p-3 rounded-lg">
+                <h3 className="font-semibold text-sm text-purple-800">Summer Intake</h3>
+                <p className="text-sm text-gray-700">June 2025</p>
+                <p className="text-xs text-gray-500">Deadline: January 15, 2025</p>
               </div>
             </div>
           </CardContent>
