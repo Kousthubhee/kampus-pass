@@ -41,7 +41,7 @@ export const Header = ({ currentPage, setCurrentPage, userProgress }: HeaderProp
             onClick={() => setCurrentPage('checklist')}
           >
             <div className="text-2xl font-bold">
-              pas<span className="text-blue-600">S</span><span className="text-cyan-600">K</span>ampus
+              pas<span className="text-cyan-600">S</span>2<span className="text-blue-600">K</span>ampus
             </div>
             <div className="ml-3 text-sm text-gray-500">
               Your guide to French education

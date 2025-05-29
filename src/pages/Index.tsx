@@ -19,7 +19,7 @@ const Index = () => {
   const [currentPage, setCurrentPage] = useState('checklist');
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [userProgress, setUserProgress] = useState({
-    keys: 0,
+    keys: 3,
     completedModules: [],
     unlockedModules: ['school']
   });

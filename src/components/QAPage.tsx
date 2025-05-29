@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -33,7 +32,6 @@ export const QAPage = () => {
       message: newMessage
     };
 
-    // Simulate bot response
     const botResponse = {
       id: messages.length + 2,
       type: 'bot',
@@ -65,28 +63,18 @@ export const QAPage = () => {
           <div className="flex-1 p-4 overflow-y-auto space-y-4">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`flex items-start max-w-xs lg:max-w-md ${
-                  msg.type === 'user' ? 'flex-row-reverse' : ''
-                }`}>
-                  <div className={`p-2 rounded-full ${
-                    msg.type === 'user' 
-                      ? 'bg-blue-600 text-white ml-2' 
-                      : 'bg-gray-200 text-gray-600 mr-2'
-                  }`}>
+                <div className={`flex items-start max-w-xs lg:max-w-md ${msg.type === 'user' ? 'flex-row-reverse' : ''}`}>
+                  <div className={`p-2 rounded-full ${msg.type === 'user' ? 'bg-blue-600 text-white ml-2' : 'bg-gray-200 text-gray-600 mr-2'}`}>
                     {msg.type === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
                   </div>
-                  <div className={`p-3 rounded-lg ${
-                    msg.type === 'user'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-900'
-                  }`}>
+                  <div className={`p-3 rounded-lg ${msg.type === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'}`}>
                     {msg.message}
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          
+
           <div className="p-4 border-t border-gray-200">
             <div className="flex space-x-2">
               <Input
