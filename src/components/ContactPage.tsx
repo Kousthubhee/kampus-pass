@@ -61,13 +61,13 @@ export const ContactPage = () => {
       name: 'Kousthubhee Krishna',
       role: 'Co-Founder & Developer',
       description: 'Passionate about helping students navigate French education',
-      avatar: '👨‍💻'
+      avatar: '👩‍🎓'
     },
     {
       name: 'Srivatsava',
       role: 'Co-Founder & Content Creator',
-      description: 'Expert in French education system and student support',
-      avatar: '👩‍🎓'
+      description: 'Passionate about helping students navigate French education',
+      avatar: '👨‍💻'
     }
   ];
 
