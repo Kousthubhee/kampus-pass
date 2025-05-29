@@ -210,7 +210,7 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
   return (
     <div className="max-w-6xl mx-auto">
       <div className="flex items-center mb-6">
-        <Button variant="ghost" onClick={onBack} className="mr-4">
+        <Button variant="ghost" onClick={() => selectedCity ? setSelectedCity(null) : onBack()} className="mr-4">
           <ArrowLeft className="h-4 w-4 mr-2" /> Back to Checklist
         </Button>
         <h1 className="text-2xl font-bold text-gray-900">Select Your City</h1>
