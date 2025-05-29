@@ -1,72 +1,71 @@
-import { useState, useEffect, useRef } from 'react';
+
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Languages, Play, Volume2, BookOpen, Award, Mic, MicOff } from 'lucide-react';
+import { Languages, Play, Volume2, BookOpen, Award } from 'lucide-react';
 
 export const LanguagePage = () => {
-  const [selectedLesson, setSelectedLesson] = useState<any>(null);
-  const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<any>(null);
+  const [selectedLesson, setSelectedLesson] = useState(null);
 
-  const lessons = [/* your existing lessons array */];
-  const tips = [/* your existing tips array */];
-
-  useEffect(() => {
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = true;
-      recognitionRef.current.interimResults = true;
-      recognitionRef.current.lang = 'fr-FR';
-
-      recognitionRef.current.onresult = (event: any) => {
-        const transcript = Array.from(event.results)
-          .map((result: any) => result[0])
-          .map((result) => result.transcript)
-          .join('');
-
-        // Log or handle transcript as needed
-        console.log('User said:', transcript);
-      };
-
-      recognitionRef.current.onerror = (event: any) => {
-        console.error('Speech recognition error', event.error);
-        setIsListening(false);
-      };
+  const lessons = [
+    {
+      id: 'greetings',
+      title: 'Greetings & Politeness',
+      level: 'Beginner',
+      duration: '10 min',
+      phrases: [
+        { french: 'Bonjour', english: 'Hello/Good morning', pronunciation: 'bon-ZHOOR' },
+        { french: 'Bonsoir', english: 'Good evening', pronunciation: 'bon-SWAHR' },
+        { french: 'S\'il vous plaît', english: 'Please', pronunciation: 'see voo PLAY' },
+        { french: 'Merci beaucoup', english: 'Thank you very much', pronunciation: 'mer-SEE bo-KOO' },
+        { french: 'Excusez-moi', english: 'Excuse me', pronunciation: 'ex-ku-ZAY mwah' }
+      ]
+    },
+    {
+      id: 'university',
+      title: 'University Life',
+      level: 'Intermediate',
+      duration: '15 min',
+      phrases: [
+        { french: 'Où est la bibliothèque?', english: 'Where is the library?', pronunciation: 'oo ay la bee-blee-oh-TEHK' },
+        { french: 'J\'ai un cours à 14h', english: 'I have a class at 2 PM', pronunciation: 'zhay uh koor ah ka-TORZ ur' },
+        { french: 'Pouvez-vous répéter?', english: 'Can you repeat?', pronunciation: 'poo-vay voo ray-pay-TAY' },
+        { french: 'Je ne comprends pas', english: 'I don\'t understand', pronunciation: 'zhuh nuh kom-prahn pah' }
+      ]
+    },
+    {
+      id: 'daily-life',
+      title: 'Daily Life & Shopping',
+      level: 'Intermediate',
+      duration: '12 min',
+      phrases: [
+        { french: 'Combien ça coûte?', english: 'How much does it cost?', pronunciation: 'kom-bee-AHN sah koot' },
+        { french: 'Où est le supermarché?', english: 'Where is the supermarket?', pronunciation: 'oo ay luh su-per-mar-SHAY' },
+        { french: 'L\'addition, s\'il vous plaît', english: 'The check, please', pronunciation: 'lah-dee-see-YOHN see voo PLAY' },
+        { french: 'Je voudrais...', english: 'I would like...', pronunciation: 'zhuh voo-DRAY' }
+      ]
+    },
+    {
+      id: 'bureaucracy',
+      title: 'Bureaucracy & Administration',
+      level: 'Advanced',
+      duration: '20 min',
+      phrases: [
+        { french: 'J\'ai besoin d\'un rendez-vous', english: 'I need an appointment', pronunciation: 'zhay buh-ZWAHN duhn rahn-day VOO' },
+        { french: 'Où puis-je obtenir ce document?', english: 'Where can I get this document?', pronunciation: 'oo pwee zhuh ob-tuh-NEER suh do-ku-MAHN' },
+        { french: 'Mon numéro de sécurité sociale', english: 'My social security number', pronunciation: 'mohn nu-may-ROH duh say-ku-ree-TAY so-see-AHL' },
+        { french: 'Quels documents sont nécessaires?', english: 'What documents are necessary?', pronunciation: 'kel do-ku-MAHN sohn nay-say-SAIR' }
+      ]
     }
+  ];
 
-    return () => {
-      recognitionRef.current?.stop();
-    };
-  }, []);
-
-  const toggleListening = () => {
-    if (isListening) {
-      recognitionRef.current?.stop();
-      setIsListening(false);
-    } else {
-      try {
-        recognitionRef.current?.start();
-        setIsListening(true);
-      } catch (error) {
-        console.error('Error starting speech recognition:', error);
-      }
-    }
-  };
-
-  const speakText = (text: string) => {
-    if ('speechSynthesis' in window && text.trim()) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text.trim());
-      utterance.lang = 'fr-FR';
-
-      const voices = window.speechSynthesis.getVoices();
-      const frenchVoice = voices.find(voice => voice.lang.startsWith('fr'));
-      if (frenchVoice) utterance.voice = frenchVoice;
-
-      window.speechSynthesis.speak(utterance);
-    }
-  };
+  const tips = [
+    'Practice pronunciation daily for 10-15 minutes',
+    'Use hand gestures - French people are expressive!',
+    'Don\'t be afraid to make mistakes',
+    'Listen to French music and podcasts',
+    'Practice with native speakers when possible'
+  ];
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -95,26 +94,8 @@ export const LanguagePage = () => {
             </div>
           </div>
 
-          <div className="flex justify-end mb-4">
-            <Button
-              onClick={toggleListening}
-              variant="outline"
-              className={isListening ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'}
-            >
-              {isListening ? (
-                <>
-                  <MicOff className="h-4 w-4 mr-2" /> Stop Listening
-                </>
-              ) : (
-                <>
-                  <Mic className="h-4 w-4 mr-2" /> Practice Speaking
-                </>
-              )}
-            </Button>
-          </div>
-
           <div className="space-y-4">
-            {selectedLesson.phrases.map((phrase: any, index: number) => (
+            {selectedLesson.phrases.map((phrase, index) => (
               <Card key={index} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
@@ -130,13 +111,13 @@ export const LanguagePage = () => {
                       {phrase.english}
                     </div>
                     <div className="flex space-x-2">
-                      <Button size="sm" variant="outline" onClick={() => speakText(phrase.french)}>
+                      <Button size="sm" variant="outline">
                         <Volume2 className="h-4 w-4 mr-2" />
                         Listen
                       </Button>
-                      <Button size="sm" variant="outline" onClick={toggleListening}>
+                      <Button size="sm" variant="outline">
                         <Play className="h-4 w-4 mr-2" />
-                        Speak
+                        Practice
                       </Button>
                     </div>
                   </div>
@@ -165,8 +146,8 @@ export const LanguagePage = () => {
           <div className="lg:col-span-2 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {lessons.map((lesson) => (
-                <Card
-                  key={lesson.id}
+                <Card 
+                  key={lesson.id} 
                   className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105"
                   onClick={() => setSelectedLesson(lesson)}
                 >
@@ -174,11 +155,11 @@ export const LanguagePage = () => {
                     <div className="h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg mb-4 flex items-center justify-center">
                       <BookOpen className="h-8 w-8 text-white" />
                     </div>
-
+                    
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
                       {lesson.title}
                     </h3>
-
+                    
                     <div className="flex items-center justify-between mb-4">
                       <span className={`text-xs px-2 py-1 rounded ${
                         lesson.level === 'Beginner' ? 'bg-green-100 text-green-800' :
@@ -189,7 +170,7 @@ export const LanguagePage = () => {
                       </span>
                       <span className="text-sm text-gray-500">{lesson.duration}</span>
                     </div>
-
+                    
                     <Button className="w-full" size="sm">
                       Start Lesson
                     </Button>
