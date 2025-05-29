@@ -161,11 +161,39 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
           </Button>
           <h1 className="text-2xl font-bold text-gray-900">{selectedSchool.name}</h1>
         </div>
-        <div className="p-4 text-gray-700">
-          <p className="mb-2"><strong>Description:</strong> {selectedSchool.description}</p>
-          <p className="mb-2"><strong>Location:</strong> {selectedSchool.location}</p>
-          <p className="mb-2"><strong>Programs:</strong> {selectedSchool.programs.join(', ')}</p>
-        </div>
+        <Card className="mb-6">
+          <CardContent className="p-6 space-y-4">
+            <p className="text-gray-700 text-sm">{selectedSchool.description}</p>
+            <div className="space-y-2">
+              <div className="flex items-center text-sm text-gray-800">
+                <MapPin className="h-4 w-4 text-gray-500 mr-2" />
+                {selectedSchool.location}
+              </div>
+              {selectedSchool.ranking && (
+                <div className="flex items-center text-sm text-gray-800">
+                  <Building2 className="h-4 w-4 text-gray-500 mr-2" />
+                  {selectedSchool.ranking}
+                </div>
+              )}
+              {selectedSchool.tuition && (
+                <div className="flex items-center text-sm text-gray-800">
+                  <Users className="h-4 w-4 text-gray-500 mr-2" />
+                  {selectedSchool.tuition}
+                </div>
+              )}
+            </div>
+            <div>
+              <div className="text-xs text-gray-500 mb-1">Programs Offered:</div>
+              <div className="flex flex-wrap gap-2">
+                {selectedSchool.programs.map((program) => (
+                  <span key={program} className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                    {program}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
