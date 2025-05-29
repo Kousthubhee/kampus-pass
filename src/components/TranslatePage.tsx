@@ -48,6 +48,8 @@ export const TranslatePage = () => {
   };
 
   const handleTextToSpeech = (text: string, language: string) => {
+    if (!text.trim()) return;
+
     if ('speechSynthesis' in window) {
       setIsSpeaking(true);
 
@@ -66,12 +68,14 @@ export const TranslatePage = () => {
       utterance.pitch = 1;
 
       utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => {
+      utterance.onerror = (event) => {
         setIsSpeaking(false);
-        console.error('Speech synthesis error');
+        console.error('Speech synthesis error:', event.error);
       };
 
-      window.speechSynthesis.speak(utterance);
+      setTimeout(() => {
+        window.speechSynthesis.speak(utterance);
+      }, 150);
     } else {
       alert('Speech synthesis is not supported in your browser');
     }
