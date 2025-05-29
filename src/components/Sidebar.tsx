@@ -1,4 +1,3 @@
-
 import { 
   CheckSquare, 
   MessageSquare, 
@@ -6,7 +5,6 @@ import {
   BookOpen, 
   Building2, 
   Languages, 
-  Translate,
   Phone
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,7 +22,7 @@ export const Sidebar = ({ currentPage, setCurrentPage }: SidebarProps) => {
     { id: 'news', icon: BookOpen, label: 'Stay Updated', color: 'text-orange-600' },
     { id: 'affiliation', icon: Building2, label: 'Our Partners', color: 'text-red-600' },
     { id: 'language', icon: Languages, label: 'Learn French', color: 'text-indigo-600' },
-    { id: 'translate', icon: Translate, label: 'Translate', color: 'text-cyan-600' },
+    { id: 'translate', icon: Languages, label: 'Translate', color: 'text-cyan-600' },
     { id: 'contact', icon: Phone, label: 'Contact Us', color: 'text-pink-600' },
   ];
 

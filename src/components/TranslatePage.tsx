@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowRight, Volume2, Copy, RotateCcw, Translate } from 'lucide-react';
+import { ArrowRight, Volume2, Copy, RotateCcw, Languages } from 'lucide-react';
 
 export const TranslatePage = () => {
   const [sourceText, setSourceText] = useState('');
@@ -67,7 +67,7 @@ export const TranslatePage = () => {
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center">
-          <Translate className="h-8 w-8 mr-3 text-cyan-600" />
+          <Languages className="h-8 w-8 mr-3 text-cyan-600" />
           Translate
         </h1>
         <p className="text-lg text-gray-600">
