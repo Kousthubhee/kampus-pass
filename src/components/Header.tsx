@@ -1,6 +1,7 @@
 
 import { Bell, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 interface HeaderProps {
   currentPage: string;
@@ -32,15 +33,19 @@ export const Header = ({ currentPage, setCurrentPage, userProgress }: HeaderProp
   return (
     <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-4">
       <div className="flex items-center justify-between">
-        <div 
-          className="flex items-center cursor-pointer hover:scale-105 transition-transform"
-          onClick={() => setCurrentPage('checklist')}
-        >
-          <div className="text-2xl font-bold">
-            pas<span className="text-blue-600">S2</span><span className="text-cyan-600">K</span>ampus
-          </div>
-          <div className="ml-2 text-sm text-gray-500">
-            Your guide to French education
+        <div className="flex items-center space-x-4">
+          <SidebarTrigger />
+          
+          <div 
+            className="flex items-center cursor-pointer hover:scale-105 transition-transform"
+            onClick={() => setCurrentPage('checklist')}
+          >
+            <div className="text-2xl font-bold">
+              pas<span className="text-blue-600">S2</span><span className="text-cyan-600">K</span>ampus
+            </div>
+            <div className="ml-3 text-sm text-gray-500">
+              Your guide to French education
+            </div>
           </div>
         </div>
         

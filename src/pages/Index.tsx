@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
-import { Sidebar } from '@/components/Sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/AppSidebar';
 import { ChecklistModule } from '@/components/ChecklistModule';
 import { QAPage } from '@/components/QAPage';
 import { HubPage } from '@/components/HubPage';
@@ -140,24 +141,26 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex w-full">
-      <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-      <div className="flex-1 flex flex-col">
-        <Header 
-          currentPage={currentPage} 
-          setCurrentPage={setCurrentPage}
-          userProgress={userProgress}
-        />
-        <main className="flex-1 p-4 md:p-6 overflow-auto">
-          {renderCurrentPage()}
-        </main>
-        <footer className="bg-white border-t border-gray-200 py-4 px-6">
-          <div className="text-center text-gray-600">
-            © <span className="text-blue-600 font-semibold">Kousthubhee</span> & <span className="text-cyan-600 font-semibold">Srivatsava</span>
-          </div>
-        </footer>
+    <SidebarProvider>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex w-full">
+        <AppSidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+        <div className="flex-1 flex flex-col">
+          <Header 
+            currentPage={currentPage} 
+            setCurrentPage={setCurrentPage}
+            userProgress={userProgress}
+          />
+          <main className="flex-1 p-4 md:p-6 overflow-auto">
+            {renderCurrentPage()}
+          </main>
+          <footer className="bg-white border-t border-gray-200 py-4 px-6">
+            <div className="text-center text-gray-600">
+              © <span className="text-blue-600 font-semibold">Kousthubhee</span> & <span className="text-cyan-600 font-semibold">Srivatsava</span>
+            </div>
+          </footer>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 

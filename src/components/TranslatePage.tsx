@@ -11,6 +11,7 @@ export const TranslatePage = () => {
   const [sourceLanguage, setSourceLanguage] = useState('en');
   const [targetLanguage, setTargetLanguage] = useState('fr');
   const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   const languages = [
     { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -52,6 +53,57 @@ export const TranslatePage = () => {
         setIsListening(false);
       }, 2000);
     }
+  };
+
+  const handleTextToSpeech = (text: string, language: string) => {
+    if ('speechSynthesis' in window) {
+      setIsSpeaking(true);
+      
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      
+      // Set language based on the language code
+      switch (language) {
+        case 'fr':
+          utterance.lang = 'fr-FR';
+          break;
+        case 'es':
+          utterance.lang = 'es-ES';
+          break;
+        case 'de':
+          utterance.lang = 'de-DE';
+          break;
+        case 'it':
+          utterance.lang = 'it-IT';
+          break;
+        default:
+          utterance.lang = 'en-US';
+      }
+      
+      utterance.rate = 0.8;
+      utterance.pitch = 1;
+      
+      utterance.onend = () => {
+        setIsSpeaking(false);
+      };
+      
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        console.error('Speech synthesis error');
+      };
+      
+      window.speechSynthesis.speak(utterance);
+    } else {
+      alert('Speech synthesis is not supported in your browser');
+    }
+  };
+
+  const handleCopyText = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      console.log('Text copied to clipboard');
+    });
   };
 
   const handlePhraseSelect = (phrase: any) => {
@@ -121,14 +173,24 @@ export const TranslatePage = () => {
                     <label className="text-sm font-medium text-gray-700">
                       {getLanguageByCode(sourceLanguage)?.flag} {getLanguageByCode(sourceLanguage)?.name}
                     </label>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={handleSpeechToText}
-                      className={isListening ? 'bg-red-50 border-red-300' : ''}
-                    >
-                      🎤 {isListening ? 'Listening...' : 'Speak'}
-                    </Button>
+                    <div className="flex space-x-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={handleSpeechToText}
+                        className={isListening ? 'bg-red-50 border-red-300' : ''}
+                      >
+                        🎤 {isListening ? 'Listening...' : 'Speak'}
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleTextToSpeech(sourceText, sourceLanguage)}
+                        disabled={!sourceText.trim() || isSpeaking}
+                      >
+                        <Volume2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                   <Textarea
                     placeholder="Enter text to translate..."
@@ -144,10 +206,20 @@ export const TranslatePage = () => {
                       {getLanguageByCode(targetLanguage)?.flag} {getLanguageByCode(targetLanguage)?.name}
                     </label>
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleTextToSpeech(translatedText, targetLanguage)}
+                        disabled={!translatedText.trim() || isSpeaking}
+                      >
                         <Volume2 className="h-4 w-4" />
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleCopyText(translatedText)}
+                        disabled={!translatedText.trim()}
+                      >
                         <Copy className="h-4 w-4" />
                       </Button>
                     </div>
