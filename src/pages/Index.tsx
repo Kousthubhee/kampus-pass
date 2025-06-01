@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
@@ -21,8 +22,17 @@ const Index = () => {
   const [userProgress, setUserProgress] = useState({
     keys: 3,
     completedModules: [],
-    unlockedModules: ['school']
+    unlockedModules: ['school'],
+    currentPage: 'checklist'
   });
+
+  // Update current page when user progress changes
+  const handleProgressUpdate = (newProgress: any) => {
+    setUserProgress(newProgress);
+    if (newProgress.currentPage && newProgress.currentPage !== currentPage) {
+      setCurrentPage(newProgress.currentPage);
+    }
+  };
 
   const checklistModules = [
     {
@@ -86,7 +96,7 @@ const Index = () => {
       icon: '🤝',
       color: 'from-rose-500 to-pink-500',
       unlocked: userProgress.unlockedModules.includes('integration'),
-      type: 'checklist'
+      type: 'integration'
     }
   ];
 
@@ -106,7 +116,7 @@ const Index = () => {
           <ChecklistModule 
             modules={checklistModules}
             userProgress={userProgress}
-            setUserProgress={setUserProgress}
+            setUserProgress={handleProgressUpdate}
             onSchoolSelect={setSelectedSchool}
           />
         );
@@ -135,7 +145,7 @@ const Index = () => {
           <ChecklistModule 
             modules={checklistModules}
             userProgress={userProgress}
-            setUserProgress={setUserProgress}
+            setUserProgress={handleProgressUpdate}
             onSchoolSelect={setSelectedSchool}
           />
         );
