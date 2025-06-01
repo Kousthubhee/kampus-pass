@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, MapPin, Building2, Users } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ArrowLeft, MapPin, Building2, Users, Info } from 'lucide-react';
 
 interface School {
   id: string;
@@ -13,11 +14,18 @@ interface School {
   programs: string[];
 }
 
+interface LocalInsight {
+  title: string;
+  description: string;
+  tips: string[];
+}
+
 interface City {
   name: string;
   description: string;
   emoji: string;
   schools: School[];
+  localInsights: LocalInsight[];
 }
 
 interface SchoolSelectorProps {
@@ -28,6 +36,7 @@ interface SchoolSelectorProps {
 export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) => {
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
+  const [showInsights, setShowInsights] = useState(false);
 
   const cities: Record<string, City> = {
     paris: {
@@ -44,6 +53,38 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
         { id: 'neoma-paris', name: 'NEOMA Business School (Paris)', description: 'Executive & MSc programs', location: 'Paris', programs: ['MSc', 'Executive'] },
         { id: 'telecom-paris', name: 'Télécom Paris', description: 'Tech-focused grande école', location: 'Paris', programs: ['Engineering', 'Telecom'] },
         { id: 'essec', name: 'ESSEC Business School', description: 'Cergy campus in Paris region', location: 'Cergy', programs: ['MIM', 'MBA', 'MSc'] }
+      ],
+      localInsights: [
+        {
+          title: "Transportation",
+          description: "Navigate Paris efficiently with metro, buses, and bikes",
+          tips: [
+            "Get a Navigo weekly/monthly pass for unlimited metro travel",
+            "Use Citymapper app for real-time transport information",
+            "Vélib' bikes are perfect for short distances",
+            "Night buses (Noctilien) run when metro is closed"
+          ]
+        },
+        {
+          title: "Housing",
+          description: "Finding accommodation in the competitive Paris market",
+          tips: [
+            "Start looking 2-3 months before arrival",
+            "Use platforms like LeBonCoin, SeLoger, PAP",
+            "Consider student residences (CROUS) for affordable options",
+            "Budget 30-40% of income for rent"
+          ]
+        },
+        {
+          title: "Student Life",
+          description: "Making the most of student life in Paris",
+          tips: [
+            "Join student associations (BDE) at your school",
+            "Take advantage of student discounts everywhere",
+            "Visit museums on first Sunday mornings (often free)",
+            "Explore different neighborhoods - each has its character"
+          ]
+        }
       ]
     },
     lyon: {
@@ -56,6 +97,28 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
         { id: 'claude-bernard', name: 'Université Claude Bernard Lyon 1', description: 'Sciences and medicine', location: 'Lyon', programs: ['Medicine', 'Science'] },
         { id: 'em-lyon', name: 'EM Lyon Business School', description: 'Prestigious business Grande École', location: 'Lyon', programs: ['MBA', 'MSc'] },
         { id: 'lumiere-lyon2', name: 'Université Lumière Lyon 2', description: 'Social sciences and arts', location: 'Lyon', programs: ['Arts', 'Social Sciences'] }
+      ],
+      localInsights: [
+        {
+          title: "Transportation",
+          description: "Efficient public transport system in Lyon",
+          tips: [
+            "TCL card covers metro, tram, and bus",
+            "Vélo'v bike sharing system throughout the city",
+            "Walking is pleasant in the city center",
+            "Student discounts available on monthly passes"
+          ]
+        },
+        {
+          title: "Food Culture",
+          description: "Lyon is the gastronomic capital of France",
+          tips: [
+            "Try traditional Lyonnaise cuisine in 'bouchons'",
+            "Visit Les Halles de Lyon food market",
+            "Student restaurants offer affordable meals",
+            "Many restaurants offer student menus"
+          ]
+        }
       ]
     },
     toulouse: {
@@ -68,6 +131,18 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
         { id: 'paul-sabatier', name: 'Université Toulouse III – Paul Sabatier', description: 'Science, tech, health', location: 'Toulouse', programs: ['Science', 'Technology', 'Health'] },
         { id: 'tbs', name: 'TBS Education', description: 'Grande École business program', location: 'Toulouse', programs: ['Business'] },
         { id: 'capitole', name: 'Université Toulouse 1 Capitole', description: 'Law, economics, management', location: 'Toulouse', programs: ['Law', 'Economics', 'Management'] }
+      ],
+      localInsights: [
+        {
+          title: "Aerospace Industry",
+          description: "Hub of European aerospace with Airbus",
+          tips: [
+            "Visit Cité de l'espace for aerospace inspiration",
+            "Network with aerospace professionals",
+            "Internship opportunities at Airbus and suppliers",
+            "Join aerospace student clubs"
+          ]
+        }
       ]
     },
     rouen: {
@@ -79,6 +154,18 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
         { id: 'insa-rouen', name: 'INSA Rouen Normandie', description: 'Engineering across multiple domains', location: 'Rouen', programs: ['Engineering'] },
         { id: 'rouen-univ', name: 'Université de Rouen Normandie', description: 'Comprehensive university', location: 'Rouen', programs: ['Various'] },
         { id: 'esigelec', name: 'ESIGELEC Rouen', description: 'Electronics and digital tech', location: 'Rouen', programs: ['Engineering'] }
+      ],
+      localInsights: [
+        {
+          title: "Cost of Living",
+          description: "More affordable than Paris with good quality of life",
+          tips: [
+            "Lower rent prices compared to Paris",
+            "Good public transportation",
+            "Close to Paris (1.5 hours by train)",
+            "Rich historical and cultural heritage"
+          ]
+        }
       ]
     },
     reims: {
@@ -90,6 +177,18 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
         { id: 'sciencespo-reims', name: 'Sciences Po Campus Reims', description: 'International program focus', location: 'Reims', programs: ['Politics', 'Global Affairs'] },
         { id: 'reims-univ', name: 'Université de Reims Champagne-Ardenne', description: 'Regional public university', location: 'Reims', programs: ['Various'] },
         { id: 'esiec', name: 'ESIEC Reims', description: 'Packaging and digital engineering', location: 'Reims', programs: ['Engineering'] }
+      ],
+      localInsights: [
+        {
+          title: "Champagne Culture",
+          description: "Heart of the Champagne region",
+          tips: [
+            "Visit champagne houses for tours",
+            "Learn about wine culture and history",
+            "Network at wine-related events",
+            "Affordable student life in smaller city"
+          ]
+        }
       ]
     },
     lille: {
@@ -102,6 +201,18 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
         { id: 'centrale-lille', name: 'École Centrale de Lille', description: 'Elite engineering school', location: 'Lille', programs: ['Engineering'] },
         { id: 'ieseg', name: 'IESEG School of Management', description: 'AACSB-accredited Grande École', location: 'Lille', programs: ['Management', 'MSc'] },
         { id: 'hei', name: 'HEI – Hautes Études d\'Ingénieur', description: 'Private engineering school', location: 'Lille', programs: ['Engineering'] }
+      ],
+      localInsights: [
+        {
+          title: "European Location",
+          description: "Gateway to Europe with excellent connections",
+          tips: [
+            "Close to Belgium, Netherlands, UK",
+            "High-speed train connections",
+            "Vibrant student nightlife",
+            "Lower cost of living"
+          ]
+        }
       ]
     },
     strasbourg: {
@@ -113,6 +224,18 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
         { id: 'insa-strasbourg', name: 'INSA Strasbourg', description: 'Part of the INSA engineering network', location: 'Strasbourg', programs: ['Engineering'] },
         { id: 'em-strasbourg', name: 'EM Strasbourg Business School', description: 'Business school within the university', location: 'Strasbourg', programs: ['Business'] },
         { id: 'sciencespo-strasbourg', name: 'Sciences Po Strasbourg', description: 'Regional campus of Sciences Po', location: 'Strasbourg', programs: ['Politics'] }
+      ],
+      localInsights: [
+        {
+          title: "European Capital",
+          description: "Home to European institutions",
+          tips: [
+            "Internship opportunities at EU institutions",
+            "Bilingual French-German environment",
+            "Strong international student community",
+            "Beautiful historic city center"
+          ]
+        }
       ]
     },
     bordeaux: {
@@ -125,6 +248,18 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
         { id: 'enseirb', name: 'ENSEIRB-MATMECA', description: 'Engineering in IT, electronics, math', location: 'Bordeaux', programs: ['Engineering'] },
         { id: 'sciencespo-bordeaux', name: 'Sciences Po Bordeaux', description: 'Political science and international studies', location: 'Bordeaux', programs: ['Politics'] },
         { id: 'inpbordeaux', name: 'INP Bordeaux', description: 'Engineering network incl. ENSEIRB-MATMECA, ENSCBP', location: 'Bordeaux', programs: ['Engineering'] }
+      ],
+      localInsights: [
+        {
+          title: "Wine Culture",
+          description: "World capital of wine",
+          tips: [
+            "Learn about wine industry and culture",
+            "Visit vineyards and châteaux",
+            "Network in wine and luxury industries",
+            "Modern tram system for easy transport"
+          ]
+        }
       ]
     },
     nice: {
@@ -137,6 +272,18 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
         { id: 'polytech-nice', name: 'Polytech Nice Sophia', description: 'Engineering school within UCA', location: 'Nice', programs: ['Engineering'] },
         { id: 'edhec-nice', name: 'EDHEC Business School (Nice)', description: 'Specializes in Finance MSc and Global MBA', location: 'Nice', programs: ['Finance', 'MBA'] },
         { id: 'mines-sophia', name: 'Mines Paris – Sophia', description: 'AI and systems engineering research campus', location: 'Sophia Antipolis', programs: ['Engineering', 'AI'] }
+      ],
+      localInsights: [
+        {
+          title: "Mediterranean Lifestyle",
+          description: "Study with a view of the Mediterranean",
+          tips: [
+            "Year-round pleasant weather",
+            "Beach lifestyle and outdoor activities",
+            "Higher cost of living",
+            "Tech hub in Sophia Antipolis"
+          ]
+        }
       ]
     },
     marseille: {
@@ -148,6 +295,18 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
         { id: 'kedge-marseille', name: 'KEDGE Business School (Marseille)', description: 'Major business school', location: 'Marseille', programs: ['Business'] },
         { id: 'centrale-marseille', name: 'École Centrale de Marseille', description: 'Part of the Centrale engineering group', location: 'Marseille', programs: ['Engineering'] },
         { id: 'polytech-marseille', name: 'Polytech Marseille', description: 'Engineering programs under AMU', location: 'Marseille', programs: ['Engineering'] }
+      ],
+      localInsights: [
+        {
+          title: "Cultural Diversity",
+          description: "Multicultural Mediterranean port city",
+          tips: [
+            "Diverse international community",
+            "Lower cost of living than Paris",
+            "Rich cultural and artistic scene",
+            "Good connections to North Africa and Middle East"
+          ]
+        }
       ]
     }
   };
@@ -254,9 +413,35 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
           <Button variant="ghost" onClick={() => setSelectedCity(null)} className="mr-4">
             <ArrowLeft className="h-4 w-4 mr-2" /> Back to Cities
           </Button>
-          <h1 className="text-2xl font-bold text-gray-900">{cityData.name} Schools</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{cityData.name} - Schools & Local Insights</h1>
         </div>
 
+        {/* Local Insights Section */}
+        <Card className="mb-6 bg-gradient-to-r from-purple-50 to-blue-50">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center">
+                <Info className="h-5 w-5 text-purple-600 mr-2" />
+                <h2 className="text-xl font-semibold text-gray-900">Local Insights for {cityData.name}</h2>
+              </div>
+              <Button onClick={() => setShowInsights(true)} variant="outline" size="sm">
+                View All Tips
+              </Button>
+            </div>
+            <p className="text-gray-600 mb-4">Get insider knowledge about living and studying in {cityData.name}</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {cityData.localInsights.slice(0, 3).map((insight, index) => (
+                <div key={index} className="bg-white p-4 rounded-lg border">
+                  <h3 className="font-semibold text-gray-900 mb-2">{insight.title}</h3>
+                  <p className="text-sm text-gray-600">{insight.description}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Schools Section */}
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Schools in {cityData.name}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {cityData.schools.map((school) => (
             <Card key={school.id} className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105" onClick={() => setSelectedSchool(school)}>
@@ -298,6 +483,33 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
             </Card>
           ))}
         </div>
+
+        {/* Local Insights Modal */}
+        <Dialog open={showInsights} onOpenChange={setShowInsights}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Local Insights for {cityData.name}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              {cityData.localInsights.map((insight, index) => (
+                <Card key={index}>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{insight.title}</h3>
+                    <p className="text-gray-600 mb-4">{insight.description}</p>
+                    <ul className="space-y-2">
+                      {insight.tips.map((tip, tipIndex) => (
+                        <li key={tipIndex} className="flex items-start">
+                          <span className="text-blue-500 mr-2">•</span>
+                          <span className="text-sm text-gray-700">{tip}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }
@@ -321,7 +533,10 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
               <h3 className="text-lg font-semibold text-gray-900 mb-2">{city.name}</h3>
               <p className="text-sm text-gray-600 mb-4">{city.description}</p>
               <div className="flex items-center justify-between">
-                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">{city.schools.length} Schools</span>
+                <div className="flex gap-2">
+                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">{city.schools.length} Schools</span>
+                  <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Local Tips</span>
+                </div>
                 <Button size="sm">Explore</Button>
               </div>
             </CardContent>

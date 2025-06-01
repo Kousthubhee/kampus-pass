@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
@@ -37,21 +36,12 @@ const Index = () => {
   const checklistModules = [
     {
       id: 'school',
-      title: 'School',
-      description: 'Explore French business schools and their offerings',
+      title: 'School & Local Insights',
+      description: 'Explore French schools and get local insights for each city',
       icon: '🏫',
       color: 'from-blue-500 to-cyan-500',
       unlocked: true,
       type: 'school'
-    },
-    {
-      id: 'local-insights',
-      title: 'Local Insights',
-      description: 'City-specific information and tips',
-      icon: '🗺️',
-      color: 'from-purple-500 to-pink-500',
-      unlocked: userProgress.unlockedModules.includes('local-insights'),
-      type: 'insights'
     },
     {
       id: 'pre-arrival-1',
