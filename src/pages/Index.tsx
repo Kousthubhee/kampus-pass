@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
@@ -13,6 +12,7 @@ import { ContactPage } from '@/components/ContactPage';
 import { ProfilePage } from '@/components/ProfilePage';
 import { NotificationPage } from '@/components/NotificationPage';
 import { SchoolDetails } from '@/components/SchoolDetails';
+import { FrenchIntegrationPage } from '@/components/FrenchIntegrationPage';
 import { Header } from '@/components/Header';
 
 const Index = () => {
@@ -128,6 +128,8 @@ const Index = () => {
         return <ProfilePage />;
       case 'notifications':
         return <NotificationPage />;
+      case 'integration':
+        return <FrenchIntegrationPage />;
       default:
         return (
           <ChecklistModule 
