@@ -5,13 +5,34 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TranslationForm } from './translate/TranslationForm';
 import { CommonPhrases } from './translate/CommonPhrases';
 import { TranslateSidebar } from './translate/TranslateSidebar';
-import { Globe, Volume2, Mic, MicOff } from 'lucide-react';
+import { Globe, Mic, MicOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
+interface SpeechRecognitionEvent {
+  results: {
+    [key: number]: {
+      [key: number]: {
+        transcript: string;
+      };
+    };
+  }[];
+}
+
+interface SpeechRecognition {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onstart: () => void;
+  onresult: (event: SpeechRecognitionEvent) => void;
+  onend: () => void;
+  start: () => void;
+  stop: () => void;
+}
 
 declare global {
   interface Window {
-    webkitSpeechRecognition: any;
-    SpeechRecognition: any;
+    webkitSpeechRecognition: new () => SpeechRecognition;
+    SpeechRecognition: new () => SpeechRecognition;
   }
 }
 
@@ -36,7 +57,7 @@ export const TranslatePage = () => {
       setIsListening(true);
     };
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
       setTranscript(transcript);
     };
@@ -73,7 +94,7 @@ export const TranslatePage = () => {
             </TabsList>
             
             <TabsContent value="translate" className="space-y-4">
-              <TranslationForm transcript={transcript} setTranscript={setTranscript} />
+              <TranslationForm />
               
               <Card>
                 <CardContent className="p-4">
@@ -100,6 +121,11 @@ export const TranslatePage = () => {
                   {isListening && (
                     <p className="text-sm text-red-600 mt-2">
                       Listening... Speak now
+                    </p>
+                  )}
+                  {transcript && (
+                    <p className="text-sm text-gray-700 mt-2">
+                      Transcript: {transcript}
                     </p>
                   )}
                 </CardContent>
