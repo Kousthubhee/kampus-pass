@@ -42,6 +42,15 @@ export const ChecklistModule = ({
   const handleModuleClick = (module: Module) => {
     const isUnlocked = userProgress.unlockedModules.includes(module.id);
     if (!isUnlocked) return;
+    
+    if (module.id === 'integration') {
+      setUserProgress({
+        ...userProgress,
+        currentPage: 'integration'
+      });
+      return;
+    }
+    
     setSelectedModule(module);
   };
 
@@ -90,7 +99,7 @@ export const ChecklistModule = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {modules.map((module) => {
           const isCompleted = userProgress.completedModules.includes(module.id);
-          const isUnlocked = userProgress.unlockedModules.includes(module.id); // ✅ Now using correct logic
+          const isUnlocked = userProgress.unlockedModules.includes(module.id);
 
           return (
             <Card
