@@ -4,8 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Users, MessageSquare, Share2, Heart, Calendar, Video, Edit, Search, Award, Pin } from 'lucide-react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 
 export const HubPage = () => {
   const [newReel, setNewReel] = useState(null);
@@ -49,7 +47,7 @@ export const HubPage = () => {
       author: 'Alex K.',
       title: 'My First Month in France: A Journey',
       time: '5 hours ago',
-      content: '<p>Sharing my experience with the CAF application...</p>',
+      content: 'Sharing my experience with the CAF application...',
       likes: 28,
       comments: []
     }
@@ -73,7 +71,7 @@ export const HubPage = () => {
     setPollOptions(updatedOptions);
   };
 
-  const pinnedPost = posts[0]; // Example pinned post
+  const pinnedPost = posts[0];
 
   const filteredContent = [...posts, ...blogs].filter(item =>
     (item.content?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -148,12 +146,20 @@ export const HubPage = () => {
                 <Edit className="h-5 w-5 mr-2 text-blue-600" />
                 Write a Blog
               </h3>
-              <ReactQuill
+              <Textarea
                 value={blogContent}
-                onChange={setBlogContent}
-                placeholder="Write your blog post here..."
-                className="mb-4"
+                onChange={(e) => setBlogContent(e.target.value)}
+                placeholder="Write your blog post here (use **bold** or *italic* for formatting)..."
+                className="mb-4 h-40"
               />
+              <div className="flex space-x-2 mb-4">
+                <Button variant="outline" size="sm" onClick={() => setBlogContent(blogContent + '**bold**')}>
+                  Bold
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => setBlogContent(blogContent + '*italic*')}>
+                  Italic
+                </Button>
+              </div>
               <Button size="sm">
                 <Share2 className="h-4 w-4 mr-2" />
                 Publish Blog
@@ -222,7 +228,7 @@ export const HubPage = () => {
                   {item.type === 'blog' && (
                     <div className="mb-4">
                       <h4 className="text-lg font-semibold">{item.title}</h4>
-                      <div dangerouslySetInnerHTML={{ __html: item.content }} />
+                      <p className="text-gray-700 whitespace-pre-wrap">{item.content}</p>
                     </div>
                   )}
 
