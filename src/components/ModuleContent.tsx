@@ -1,23 +1,17 @@
-import { useState, useEffect } from 'react';
+
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Clock, FileText } from 'lucide-react';
 
 interface ModuleContentProps {
   module: any;
   onBack: () => void;
   onComplete: (moduleId: string) => void;
-  onNextModule?: (nextModuleId: string | null) => void; // New callback for next module
   isCompleted: boolean;
 }
 
-export const ModuleContent = ({ 
-  module, 
-  onBack, 
-  onComplete, 
-  onNextModule,
-  isCompleted 
-}: ModuleContentProps) => {
+export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: ModuleContentProps) => {
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
 
   const getModuleSteps = (moduleId: string) => {
@@ -53,12 +47,6 @@ export const ModuleContent = ({
     }
   };
 
-  const getNextModule = (currentModuleId: string) => {
-    const moduleOrder = ['pre-arrival-1', 'pre-arrival-2', 'post-arrival'];
-    const currentIndex = moduleOrder.indexOf(currentModuleId);
-    return currentIndex < moduleOrder.length - 1 ? moduleOrder[currentIndex + 1] : null;
-  };
-
   const steps = getModuleSteps(module.id);
 
   const handleStepComplete = (stepId: string) => {
@@ -69,18 +57,7 @@ export const ModuleContent = ({
 
   const handleModuleComplete = () => {
     onComplete(module.id);
-    const nextModule = getNextModule(module.id);
-    if (onNextModule) {
-      onNextModule(nextModule); // Let parent handle the navigation
-    }
   };
-
-  // Auto-complete module if all steps are done (optional)
-  useEffect(() => {
-    if (completedSteps.length === steps.length && !isCompleted) {
-      handleModuleComplete();
-    }
-  }, [completedSteps, isCompleted]);
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -168,7 +145,7 @@ export const ModuleContent = ({
                   onClick={handleModuleComplete}
                   className="bg-green-600 hover:bg-green-700"
                 >
-                  Complete Module & Continue to Next 🚀
+                  Complete Module & Earn Key 🗝️
                 </Button>
               </div>
             </CardContent>
