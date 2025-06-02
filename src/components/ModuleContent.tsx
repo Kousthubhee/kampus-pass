@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, CheckCircle, Clock, FileText } from 'lucide-react';
+import { ArrowLeft, CheckCircle } from 'lucide-react';
+import { useRouter } from 'next/router';
 
 interface ModuleContentProps {
   module: any;
@@ -12,6 +13,7 @@ interface ModuleContentProps {
 
 export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: ModuleContentProps) => {
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
+  const router = useRouter();
 
   const getModuleSteps = (moduleId: string) => {
     switch (moduleId) {
@@ -46,6 +48,12 @@ export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: Modul
     }
   };
 
+  const getNextModule = (currentModuleId: string) => {
+    const moduleOrder = ['pre-arrival-1', 'pre-arrival-2', 'post-arrival'];
+    const currentIndex = moduleOrder.indexOf(currentModuleId);
+    return currentIndex < moduleOrder.length - 1 ? moduleOrder[currentIndex + 1] : null;
+  };
+
   const steps = getModuleSteps(module.id);
 
   const handleStepComplete = (stepId: string) => {
@@ -55,8 +63,19 @@ export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: Modul
   };
 
   const handleModuleComplete = () => {
-    onComplete(module.id); // This will handle the completion logic without redirect
+    onComplete(module.id);
+    const nextModule = getNextModule(module.id);
+    if (nextModule) {
+      router.push(`/modules/${nextModule}`);
+    }
   };
+
+  // Auto-complete module if all steps are done (optional)
+  useEffect(() => {
+    if (completedSteps.length === steps.length && !isCompleted) {
+      handleModuleComplete();
+    }
+  }, [completedSteps, isCompleted]);
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -143,9 +162,8 @@ export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: Modul
                 <Button 
                   onClick={handleModuleComplete}
                   className="bg-green-600 hover:bg-green-700"
-                  // No additional onClick handler that would cause redirect
                 >
-                  Complete Module & Earn Key 🗝️
+                  Complete Module & Continue to Next 🚀
                 </Button>
               </div>
             </CardContent>
