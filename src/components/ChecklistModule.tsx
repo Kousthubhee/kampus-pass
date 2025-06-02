@@ -33,12 +33,12 @@ export const ChecklistModule = ({
 
   // Reset selected module when navigating back to checklist page
   useEffect(() => {
-    console.log('ChecklistModule useEffect triggered:', { currentPage, selectedModule });
+    console.log('ChecklistModule useEffect triggered:', { currentPage });
     if (currentPage === 'checklist' && selectedModule) {
-      console.log('Resetting selected module');
+      console.log('Resetting selected module due to page navigation');
       setSelectedModule(null);
     }
-  }, [currentPage, selectedModule]);
+  }, [currentPage]); // Only watch currentPage, not selectedModule
 
   // Unlock all modules once on load
   useEffect(() => {
