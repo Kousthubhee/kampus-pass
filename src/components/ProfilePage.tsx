@@ -4,7 +4,7 @@ import { User, Settings, Award, Calendar, BookOpen, Target } from 'lucide-react'
 import { useState } from 'react';
 
 export const ProfilePage = () => {
-  const [isVFSPopupOpen, setIsVFSPopupOpen] = useState(false);
+  const [selectedModule, setSelectedModule] = useState(null);
 
   const userStats = [
     { label: 'Modules Completed', value: '3/7', icon: Target },
@@ -34,6 +34,7 @@ export const ProfilePage = () => {
         {
           name: 'VFS Visa Application',
           progress: 50,
+          description: 'Apply for your French student visa through VFS Global.',
           details: {
             documents: [
               'Valid passport (valid for at least 3 months after return)',
@@ -62,16 +63,80 @@ export const ProfilePage = () => {
             ]
           }
         },
-        { name: 'Campus France Procedure', progress: 30 },
-        { name: 'Travel Arrangements', progress: 10 }
+        {
+          name: 'Campus France Procedure',
+          progress: 30,
+          description: 'Complete the Campus France process to validate your study plans in France.',
+          details: {
+            steps: [
+              'Create an account on the Campus France website',
+              'Fill out the application form with academic details',
+              'Upload required documents (transcripts, motivation letter, etc.)',
+              'Pay the Campus France fee',
+              'Schedule and attend an interview (if required)',
+              'Receive the authorization letter'
+            ]
+          }
+        },
+        {
+          name: 'Travel Arrangements',
+          progress: 10,
+          description: 'Plan your travel to France, including flights and initial accommodation.',
+          details: {
+            requirements: [
+              'Book a round-trip or one-way flight to France',
+              'Arrange temporary accommodation (e.g., hotel or Airbnb)',
+              'Obtain travel insurance for the journey',
+              'Plan transportation from airport to accommodation'
+            ]
+          }
+        }
       ]
     },
     {
       category: 'Post-Arrival',
       items: [
-        { name: 'OFII Registration', progress: 0 },
-        { name: 'Bank Account Setup', progress: 0 },
-        { name: 'Housing Registration', progress: 0 }
+        {
+          name: 'OFII Registration',
+          progress: 0,
+          description: 'Register with the French Office of Immigration and Integration (OFII) to validate your visa.',
+          details: {
+            steps: [
+              'Complete the OFII form received with your visa',
+              'Submit the form via mail or online within 3 months of arrival',
+              'Pay the OFII tax (€60-€250, depending on visa type)',
+              'Attend the OFII medical examination and interview',
+              'Receive the residence permit sticker'
+            ]
+          }
+        },
+        {
+          name: 'Bank Account Setup',
+          progress: 0,
+          description: 'Open a French bank account to manage your finances.',
+          details: {
+            requirements: [
+              'Valid passport and visa',
+              'Proof of address in France (e.g., utility bill or rental contract)',
+              'Student enrollment certificate',
+              'Initial deposit (varies by bank, typically €10-€50)'
+            ]
+          }
+        },
+        {
+          name: 'Housing Registration',
+          progress: 0,
+          description: 'Register your accommodation and apply for housing benefits (e.g., CAF).',
+          details: {
+            steps: [
+              'Sign a lease agreement with your landlord',
+              'Obtain a housing insurance certificate',
+              'Register with CAF (Caisse d’Allocations Familiales) online',
+              'Submit proof of residence and income details',
+              'Receive housing allowance (if eligible)'
+            ]
+          }
+        }
       ]
     }
   ];
@@ -160,8 +225,8 @@ export const ProfilePage = () => {
                         <div key={itemIndex}>
                           <div className="flex justify-between mb-2">
                             <span 
-                              className={`text-gray-700 ${item.name === 'VFS Visa Application' ? 'cursor-pointer text-blue-600 hover:underline' : ''}`}
-                              onClick={item.name === 'VFS Visa Application' ? () => setIsVFSPopupOpen(true) : null}
+                              className="text-gray-700 cursor-pointer text-blue-600 hover:underline"
+                              onClick={() => setSelectedModule(item)}
                             >
                               {item.name}
                             </span>
@@ -253,38 +318,68 @@ export const ProfilePage = () => {
         </div>
       </div>
 
-      {isVFSPopupOpen && (
+      {selectedModule && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">VFS Visa Application</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">{selectedModule.name}</h3>
             <div className="space-y-4">
               <div>
-                <h4 className="text-md font-medium text-gray-800">Required Documents</h4>
-                <ul className="list-disc pl-5 text-gray-600">
-                  {modules[0].items[0].details.documents.map((doc, index) => (
-                    <li key={index}>{doc}</li>
-                  ))}
-                </ul>
+                <h4 className="text-md font-medium text-gray-800">Description</h4>
+                <p className="text-gray-600">{selectedModule.description}</p>
               </div>
-              <div>
-                <h4 className="text-md font-medium text-gray-800">Application Process</h4>
-                <ol className="list-decimal pl-5 text-gray-600">
-                  {modules[0].items[0].details.process.map((step, index) => (
-                    <li key={index}>{step}</li>
-                  ))}
-                </ol>
-              </div>
-              <div>
-                <h4 className="text-md font-medium text-gray-800">Fees</h4>
-                <ul className="list-disc pl-5 text-gray-600">
-                  {modules[0].items[0].details.fees.map((fee, index) => (
-                    <li key={index}>{fee}</li>
-                  ))}
-                </ul>
-              </div>
+              {selectedModule.details.documents && (
+                <div>
+                  <h4 className="text-md font-medium text-gray-800">Required Documents</h4>
+                  <ul className="list-disc pl-5 text-gray-600">
+                    {selectedModule.details.documents.map((doc, index) => (
+                      <li key={index}>{doc}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {selectedModule.details.process && (
+                <div>
+                  <h4 className="text-md font-medium text-gray-800">Application Process</h4>
+                  <ol className="list-decimal pl-5 text-gray-600">
+                    {selectedModule.details.process.map((step, index) => (
+                      <li key={index}>{step}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+              {selectedModule.details.fees && (
+                <div>
+                  <h4 className="text-md font-medium text-gray-800">Fees</h4>
+                  <ul className="list-disc pl-5 text-gray-600">
+                    {selectedModule.details.fees.map((fee, index) => (
+                      <li key={index}>{fee}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {selectedModule.details.steps && (
+                <div>
+                  <h4 className="text-md font-medium text-gray-800">Steps</h4>
+                  <ol className="list-decimal pl-5 text-gray-600">
+                    {selectedModule.details.steps.map((step, index) => (
+                      <li key={index}>{step}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+              {selectedModule.details.requirements && (
+                <div>
+                  <h4 className="text-md font-medium text-gray-800">Requirements</h4>
+                  <ul className="list-disc pl-5 text-gray-600">
+                    {selectedModule.details.requirements.map((req, index) => (
+                      <li key={index}>{req}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
             <div className="mt-6 flex justify-end">
-              <Button onClick={() => setIsVFSPopupOpen(false)}>Close</Button>
+              <Button onClick={() => setSelectedModule(null)}>Close</Button>
             </div>
           </div>
         </div>
