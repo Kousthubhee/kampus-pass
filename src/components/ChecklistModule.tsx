@@ -19,15 +19,24 @@ interface ChecklistModuleProps {
   userProgress: any;
   setUserProgress: (progress: any) => void;
   onSchoolSelect: (school: any) => void;
+  currentPage: string;
 }
 
 export const ChecklistModule = ({
   modules,
   userProgress,
   setUserProgress,
-  onSchoolSelect
+  onSchoolSelect,
+  currentPage
 }: ChecklistModuleProps) => {
   const [selectedModule, setSelectedModule] = useState<Module | null>(null);
+
+  // Reset selected module when navigating back to checklist page
+  useEffect(() => {
+    if (currentPage === 'checklist') {
+      setSelectedModule(null);
+    }
+  }, [currentPage]);
 
   // Unlock all modules once on load
   useEffect(() => {

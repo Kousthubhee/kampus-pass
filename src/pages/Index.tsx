@@ -109,6 +109,7 @@ const Index = () => {
             userProgress={userProgress}
             setUserProgress={handleProgressUpdate}
             onSchoolSelect={setSelectedSchool}
+            currentPage={currentPage}
           />
         );
       case 'qa':
@@ -140,6 +141,7 @@ const Index = () => {
             userProgress={userProgress}
             setUserProgress={handleProgressUpdate}
             onSchoolSelect={setSelectedSchool}
+            currentPage={currentPage}
           />
         );
     }
