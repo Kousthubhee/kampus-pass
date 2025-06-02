@@ -1,6 +1,7 @@
+```tsx
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { User, Settings, Award, Calendar, BookOpen, Target } from 'lucide-react';
+import { User, Settings, Award, Calendar, BookOpen, Target, Star, Key, Globe, Users } from 'lucide-react';
 import { useState } from 'react';
 
 interface Stat {
@@ -18,8 +19,7 @@ interface Activity {
 interface Achievement {
   title: string;
   description: string;
-  icon: string;
-  earned: boolean;
+  icon: typeof Star | typeof Key | typeof Globe | typeof Users;
 }
 
 interface ModuleDetail {
@@ -111,7 +111,7 @@ export const ProfilePage = () => {
             requirements: [
               'Book a round-trip or one-way flight to France',
               'Arrange temporary accommodation (e.g., hotel or Airbnb)',
-              'Obtain-travel insurance for the journey',
+              'Obtain travel insurance for the journey',
               'Plan transportation from airport to accommodation'
             ],
             resources: [
@@ -181,7 +181,7 @@ export const ProfilePage = () => {
   ]);
   const [recentActivity, setRecentActivity] = useState<Activity[]>([
     { action: 'Completed School module', time: '2 hours ago', type: 'completion' },
-    { action: 'Earned a key 🗝️', time: '2 hours ago', type: 'achievement' },
+    { action: 'Earned a key', time: '2 hours ago', type: 'achievement' },
     { action: 'Started Pre-Arrival Checklist (Part 1)', time: '1 day ago', type: 'start' },
     { action: 'Joined Community Hub', time: '3 days ago', type: 'join' }
   ]);
@@ -194,10 +194,10 @@ export const ProfilePage = () => {
   ];
 
   const achievements: Achievement[] = [
-    { title: 'First Steps', description: 'Completed your first module', icon: '🎯', earned: true },
-    { title: 'Key Collector', description: 'Earned 5 keys', icon: '🗝️', earned: false },
-    { title: 'French Speaker', description: 'Completed 10 language lessons', icon: '🇫🇷', earned: false },
-    { title: 'Community Helper', description: 'Helped 5 fellow students', icon: '🤝', earned: false }
+    { title: 'First Steps', description: 'Completed your first module', icon: Star, earned: true },
+    { title: 'Key Collector', description: 'Earned 5 keys', icon: Key, earned: false },
+    { title: 'French Speaker', description: 'Completed 10 language lessons', icon: Globe, earned: false },
+    { title: 'Community Helper', description: 'Helped 5 fellow students', icon: Users, earned: false }
   ];
 
   const handleMarkComplete = (module: Module) => {
@@ -229,9 +229,7 @@ export const ProfilePage = () => {
           <User className="h-8 w-8 mr-3 text-blue-600" />
           Profile
         </h1>
-        <p className="text-lg text-gray-600">
-          Track your progress and manage your learning journey
-        </p>
+        <p className="text-lg text-gray-600">Track your progress and manage your learning journey</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -241,14 +239,12 @@ export const ProfilePage = () => {
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center">
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl mr-4">
-                    👨‍🎓
+                    S
                   </div>
                   <div>
                     <h2 className="text-xl font-semibold text-gray-900">Student Name</h2>
                     <p className="text-gray-600">Future student in France</p>
-                    <div className="text-sm text-gray-500 mt-1">
-                      Member since December 2024
-                    </div>
+                    <div className="text-sm text-gray-500 mt-1">Member since December 2024</div>
                   </div>
                 </div>
                 <Button variant="outline">
@@ -278,12 +274,17 @@ export const ProfilePage = () => {
               <div className="space-y-4">
                 {recentActivity.map((activity, index) => (
                   <div key={index} className="flex items-center">
-                    <div className={`w-3 h-3 rounded-full mr-4 ${
-                      activity.type === 'completion' ? 'bg-green-500' :
-                      activity.type === 'achievement' ? 'bg-yellow-500' :
-                      activity.type === 'start' ? 'bg-blue-500' :
-                      'bg-purple-500'
-                    }`} />
+                    <div
+                      className={`w-3 h-3 rounded-full mr-4 ${
+                        activity.type === 'completion'
+                          ? 'bg-green-500'
+                          : activity.type === 'achievement'
+                          ? 'bg-yellow-500'
+                          : activity.type === 'start'
+                          ? 'bg-blue-500'
+                          : 'bg-purple-500'
+                      }`}
+                    />
                     <div className="flex-1">
                       <div className="text-gray-900">{activity.action}</div>
                       <div className="text-sm text-gray-500">{activity.time}</div>
@@ -305,7 +306,7 @@ export const ProfilePage = () => {
                       {category.items.map((item, itemIndex) => (
                         <div key={itemIndex}>
                           <div className="flex justify-between mb-2">
-                            <span 
+                            <span
                               className="text-gray-700 cursor-pointer text-blue-600 hover:underline"
                               onClick={() => setSelectedModule(item)}
                             >
@@ -314,9 +315,9 @@ export const ProfilePage = () => {
                             <span className="text-gray-600">{item.progress}%</span>
                           </div>
                           <div className="bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full" 
-                              style={{ width: `${item.progress}%` }} 
+                            <div
+                              className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full"
+                              style={{ width: item.progress + '%' }}
                             />
                           </div>
                         </div>
@@ -335,19 +336,22 @@ export const ProfilePage = () => {
               <h3 className="text-lg font-semibold mb-4">Achievements</h3>
               <div className="space-y-3">
                 {achievements.map((achievement, index) => (
-                  <div key={index} className={`flex items-center p-3 rounded-lg ${
-                    achievement.earned ? 'bg-green-50 border border-green-200' : 'bg-gray-50'
-                  }`}>
-                    <div className="text-2xl mr-3">{achievement.icon}</div>
+                  <div
+                    key={index}
+                    className={`flex items-center p-3 rounded-lg ${
+                      achievement.earned ? 'bg-green-50 border border-green-200' : 'bg-gray-50'
+                    }`}
+                  >
+                    <achievement.icon className="h-6 w-6 mr-3 text-gray-700" />
                     <div>
-                      <div className={`font-medium ${
-                        achievement.earned ? 'text-green-900' : 'text-gray-700'
-                      }`}>
+                      <div
+                        className={`font-medium ${achievement.earned ? 'text-green-900' : 'text-gray-700'}`}
+                      >
                         {achievement.title}
                       </div>
-                      <div className={`text-sm ${
-                        achievement.earned ? 'text-green-700' : 'text-gray-500'
-                      }`}>
+                      <div
+                        className={`text-sm ${achievement.earned ? 'text-green-700' : 'text-gray-500'}`}
+                      >
                         {achievement.description}
                       </div>
                     </div>
@@ -382,16 +386,16 @@ export const ProfilePage = () => {
               <h3 className="text-lg font-semibold mb-4">Account Settings</h3>
               <div className="space-y-2">
                 <Button variant="outline" className="w-full justify-start">
-                  📧 Email Preferences
+                  Email Preferences
                 </Button>
                 <Button variant="outline" className="w-full justify-start">
-                  🔔 Notification Settings
+                  Notification Settings
                 </Button>
                 <Button variant="outline" className="w-full justify-start">
-                  🌍 Language & Region
+                  Language & Region
                 </Button>
                 <Button variant="outline" className="w-full justify-start">
-                  📱 Export Data
+                  Export Data
                 </Button>
               </div>
             </CardContent>
@@ -464,10 +468,10 @@ export const ProfilePage = () => {
                   <ul className="list-disc pl-5 text-gray-600">
                     {selectedModule.details.resources.map((resource, index) => (
                       <li key={index}>
-                        <a 
-                          href={resource.url} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
+                        <a
+                          href={resource.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="text-blue-600 hover:underline"
                         >
                           {resource.name}
@@ -479,8 +483,8 @@ export const ProfilePage = () => {
               )}
             </div>
             <div className="mt-6 flex justify-end space-x-2">
-              <Button 
-                onClick={() => handleMarkComplete(selectedModule)} 
+              <Button
+                onClick={() => handleMarkComplete(selectedModule)}
                 disabled={selectedModule.progress >= 100}
               >
                 Mark as Complete
@@ -495,3 +499,4 @@ export const ProfilePage = () => {
     </div>
   );
 };
+```
