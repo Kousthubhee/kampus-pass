@@ -1,4 +1,3 @@
-
 import { 
   CheckSquare, 
   MessageSquare, 
@@ -6,7 +5,8 @@ import {
   BookOpen, 
   Building2, 
   Languages, 
-  Phone
+  Phone,
+  FileText
 } from 'lucide-react';
 import {
   Sidebar,
@@ -30,6 +30,7 @@ interface AppSidebarProps {
 export const AppSidebar = ({ currentPage, setCurrentPage }: AppSidebarProps) => {
   const menuItems = [
     { id: 'checklist', icon: CheckSquare, label: 'Checklist', color: 'text-blue-600' },
+    { id: 'documents', icon: FileText, label: 'Documents & Renewals', color: 'text-teal-600' },
     { id: 'qa', icon: MessageSquare, label: 'Ask Me Anything', color: 'text-green-600' },
     { id: 'hub', icon: Users, label: 'Community Hub', color: 'text-purple-600' },
     { id: 'news', icon: BookOpen, label: 'Stay Updated', color: 'text-orange-600' },

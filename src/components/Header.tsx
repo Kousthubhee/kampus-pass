@@ -1,4 +1,3 @@
-
 import { Bell, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
@@ -17,6 +16,7 @@ export const Header = ({ currentPage, setCurrentPage, userProgress }: HeaderProp
   const getPageTitle = () => {
     switch (currentPage) {
       case 'checklist': return 'Checklist - Begin Your Journey';
+      case 'documents': return 'Documents & Renewals';
       case 'qa': return 'Ask Me Anything';
       case 'hub': return 'Community Hub';
       case 'news': return 'Stay Updated';
