@@ -33,10 +33,12 @@ export const ChecklistModule = ({
 
   // Reset selected module when navigating back to checklist page
   useEffect(() => {
-    if (currentPage === 'checklist') {
+    console.log('ChecklistModule useEffect triggered:', { currentPage, selectedModule });
+    if (currentPage === 'checklist' && selectedModule) {
+      console.log('Resetting selected module');
       setSelectedModule(null);
     }
-  }, [currentPage]);
+  }, [currentPage, selectedModule]);
 
   // Unlock all modules once on load
   useEffect(() => {
@@ -51,6 +53,8 @@ export const ChecklistModule = ({
   const handleModuleClick = (module: Module) => {
     const isUnlocked = userProgress.unlockedModules.includes(module.id);
     if (!isUnlocked) return;
+    
+    console.log('Module clicked:', module.id);
     
     if (module.id === 'integration') {
       setUserProgress({
@@ -72,6 +76,12 @@ export const ChecklistModule = ({
 
     setUserProgress(newProgress);
   };
+
+  // Force reset if we're on checklist page but have a selected module
+  if (currentPage === 'checklist' && selectedModule) {
+    console.log('Force resetting selected module');
+    setSelectedModule(null);
+  }
 
   if (selectedModule) {
     if (selectedModule.type === 'school') {
