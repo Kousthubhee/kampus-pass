@@ -2,18 +2,23 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
-import { useRouter } from 'next/router';
 
 interface ModuleContentProps {
   module: any;
   onBack: () => void;
   onComplete: (moduleId: string) => void;
+  onNextModule?: (nextModuleId: string | null) => void; // New callback for next module
   isCompleted: boolean;
 }
 
-export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: ModuleContentProps) => {
+export const ModuleContent = ({ 
+  module, 
+  onBack, 
+  onComplete, 
+  onNextModule,
+  isCompleted 
+}: ModuleContentProps) => {
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
-  const router = useRouter();
 
   const getModuleSteps = (moduleId: string) => {
     switch (moduleId) {
@@ -65,8 +70,8 @@ export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: Modul
   const handleModuleComplete = () => {
     onComplete(module.id);
     const nextModule = getNextModule(module.id);
-    if (nextModule) {
-      router.push(`/modules/${nextModule}`);
+    if (onNextModule) {
+      onNextModule(nextModule); // Let parent handle the navigation
     }
   };
 
