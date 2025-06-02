@@ -77,12 +77,6 @@ export const ChecklistModule = ({
     setUserProgress(newProgress);
   };
 
-  // Force reset if we're on checklist page but have a selected module
-  if (currentPage === 'checklist' && selectedModule) {
-    console.log('Force resetting selected module');
-    setSelectedModule(null);
-  }
-
   if (selectedModule) {
     if (selectedModule.type === 'school') {
       return (
