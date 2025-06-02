@@ -5,29 +5,7 @@ import { useState } from 'react';
 
 export const ProfilePage = () => {
   const [selectedModule, setSelectedModule] = useState(null);
-
-  const userStats = [
-    { label: 'Modules Completed', value: '3/7', icon: Target },
-    { label: 'Keys Earned', value: '3', icon: Award },
-    { label: 'Days Active', value: '15', icon: Calendar },
-    { label: 'Lessons Learned', value: '12', icon: BookOpen }
-  ];
-
-  const achievements = [
-    { title: 'First Steps', description: 'Completed your first module', icon: '🎯', earned: true },
-    { title: 'Key Collector', description: 'Earned 5 keys', icon: '🗝️', earned: false },
-    { title: 'French Speaker', description: 'Completed 10 language lessons', icon: '🇫🇷', earned: false },
-    { title: 'Community Helper', description: 'Helped 5 fellow students', icon: '🤝', earned: false }
-  ];
-
-  const recentActivity = [
-    { action: 'Completed School module', time: '2 hours ago', type: 'completion' },
-    { action: 'Earned a key 🗝️', time: '2 hours ago', type: 'achievement' },
-    { action: 'Started Pre-Arrival Checklist (Part 1)', time: '1 day ago', type: 'start' },
-    { action: 'Joined Community Hub', time: '3 days ago', type: 'join' }
-  ];
-
-  const modules = [
+  const [modules, setModules] = useState([
     {
       category: 'Pre-Arrival',
       items: [
@@ -60,6 +38,10 @@ export const ProfilePage = () => {
               'Campus France fee: €50-€100 (varies by country)',
               'VFS service fee: €40 (approx.)',
               'Visa fee: €80 for long-stay student visa'
+            ],
+            resources: [
+              { name: 'VFS Global Website', url: 'https://www.vfsglobal.com' },
+              { name: 'Campus France', url: 'https://www.campusfrance.org' }
             ]
           }
         },
@@ -75,6 +57,9 @@ export const ProfilePage = () => {
               'Pay the Campus France fee',
               'Schedule and attend an interview (if required)',
               'Receive the authorization letter'
+            ],
+            resources: [
+              { name: 'Campus France Guide', url: 'https://www.campusfrance.org/en/procedure' }
             ]
           }
         },
@@ -88,6 +73,10 @@ export const ProfilePage = () => {
               'Arrange temporary accommodation (e.g., hotel or Airbnb)',
               'Obtain travel insurance for the journey',
               'Plan transportation from airport to accommodation'
+            ],
+            resources: [
+              { name: 'Skyscanner', url: 'https://www.skyscanner.com' },
+              { name: 'Airbnb', url: 'https://www.airbnb.com' }
             ]
           }
         }
@@ -107,6 +96,9 @@ export const ProfilePage = () => {
               'Pay the OFII tax (€60-€250, depending on visa type)',
               'Attend the OFII medical examination and interview',
               'Receive the residence permit sticker'
+            ],
+            resources: [
+              { name: 'OFII Website', url: 'https://www.ofii.fr' }
             ]
           }
         },
@@ -120,6 +112,10 @@ export const ProfilePage = () => {
               'Proof of address in France (e.g., utility bill or rental contract)',
               'Student enrollment certificate',
               'Initial deposit (varies by bank, typically €10-€50)'
+            ],
+            resources: [
+              { name: 'BNP Paribas', url: 'https://www.bnpparibas.fr' },
+              { name: 'Société Générale', url: 'https://www.societegenerale.fr' }
             ]
           }
         },
@@ -134,12 +130,43 @@ export const ProfilePage = () => {
               'Register with CAF (Caisse d’Allocations Familiales) online',
               'Submit proof of residence and income details',
               'Receive housing allowance (if eligible)'
+            ],
+            resources: [
+              { name: 'CAF Website', url: 'https://www.caf.fr' }
             ]
           }
         }
       ]
     }
-  ];
+  ]);
+  const [recentActivity, setRecentActivity] = useState([
+    { action: 'Completed School module', time: '2 hours ago', type: 'completion' },
+    { action: 'Earned a key 🗝️', time: '2 hours ago', type: 'achievement' },
+    { action: 'Started Pre-Arrival Checklist (Part 1)', time: '1 day ago', type: 'start' },
+    { action: 'Joined Community Hub', time: '3 days ago', type: 'join' }
+  ]);
+
+  const handleMarkComplete = (module) => {
+    setModules((prevModules) =>
+      prevModules.map((category) => ({
+        ...category,
+        items: category.items.map((item) =>
+          item.name === module.name
+            ? { ...item, progress: Math.min(item.progress + 10, 100) }
+            : item
+        )
+      })
+    );
+    setRecentActivity((prevActivity) => [
+      {
+        action: `Progressed in ${module.name}`,
+        time: new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),
+        type: 'completion'
+      },
+      ...prevActivity.slice(0, 3) // Keep only the latest 4 activities
+    ]);
+    setSelectedModule(null);
+  };
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -377,9 +404,36 @@ export const ProfilePage = () => {
                   </ul>
                 </div>
               )}
+              {selectedModule.details.resources && (
+                <div>
+                  <h4 className="text-md font-medium text-gray-800">Resources</h4>
+                  <ul className="list-disc pl-5 text-gray-600">
+                    {selectedModule.details.resources.map((resource, index) => (
+                      <li key={index}>
+                        <a 
+                          href={resource.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-blue-600 hover:underline"
+                        >
+                          {resource.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
-            <div className="mt-6 flex justify-end">
-              <Button onClick={() => setSelectedModule(null)}>Close</Button>
+            <div className="mt-6 flex justify-end space-x-2">
+              <Button 
+                onClick={() => handleMarkComplete(selectedModule)} 
+                disabled={selectedModule.progress >= 100}
+              >
+                Mark as Complete
+              </Button>
+              <Button variant="outline" onClick={() => setSelectedModule(null)}>
+                Close
+              </Button>
             </div>
           </div>
         </div>
