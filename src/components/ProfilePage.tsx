@@ -3,9 +3,49 @@ import { Button } from '@/components/ui/button';
 import { User, Settings, Award, Calendar, BookOpen, Target } from 'lucide-react';
 import { useState } from 'react';
 
+interface Stat {
+  label: string;
+  value: string;
+  icon: typeof Target | typeof Award | typeof Calendar | typeof BookOpen;
+}
+
+interface Activity {
+  action: string;
+  time: string;
+  type: string;
+}
+
+interface Achievement {
+  title: string;
+  description: string;
+  icon: string;
+  earned: boolean;
+}
+
+interface ModuleDetail {
+  documents?: string[];
+  process?: string[];
+  fees?: string[];
+  steps?: string[];
+  requirements?: string[];
+  resources?: { name: string; url: string }[];
+}
+
+interface Module {
+  name: string;
+  progress: number;
+  description: string;
+  details: ModuleDetail;
+}
+
+interface Category {
+  category: string;
+  items: Module[];
+}
+
 export const ProfilePage = () => {
-  const [selectedModule, setSelectedModule] = useState(null);
-  const [modules, setModules] = useState([
+  const [selectedModule, setSelectedModule] = useState<Module | null>(null);
+  const [modules, setModules] = useState<Category[]>([
     {
       category: 'Pre-Arrival',
       items: [
@@ -71,7 +111,7 @@ export const ProfilePage = () => {
             requirements: [
               'Book a round-trip or one-way flight to France',
               'Arrange temporary accommodation (e.g., hotel or Airbnb)',
-              'Obtain travel insurance for the journey',
+              'Obtain-travel insurance for the journey',
               'Plan transportation from airport to accommodation'
             ],
             resources: [
@@ -139,14 +179,28 @@ export const ProfilePage = () => {
       ]
     }
   ]);
-  const [recentActivity, setRecentActivity] = useState([
+  const [recentActivity, setRecentActivity] = useState<Activity[]>([
     { action: 'Completed School module', time: '2 hours ago', type: 'completion' },
     { action: 'Earned a key 🗝️', time: '2 hours ago', type: 'achievement' },
     { action: 'Started Pre-Arrival Checklist (Part 1)', time: '1 day ago', type: 'start' },
     { action: 'Joined Community Hub', time: '3 days ago', type: 'join' }
   ]);
 
-  const handleMarkComplete = (module) => {
+  const userStats: Stat[] = [
+    { label: 'Modules Completed', value: '3/7', icon: Target },
+    { label: 'Keys Earned', value: '3', icon: Award },
+    { label: 'Days Active', value: '15', icon: Calendar },
+    { label: 'Lessons Learned', value: '12', icon: BookOpen }
+  ];
+
+  const achievements: Achievement[] = [
+    { title: 'First Steps', description: 'Completed your first module', icon: '🎯', earned: true },
+    { title: 'Key Collector', description: 'Earned 5 keys', icon: '🗝️', earned: false },
+    { title: 'French Speaker', description: 'Completed 10 language lessons', icon: '🇫🇷', earned: false },
+    { title: 'Community Helper', description: 'Helped 5 fellow students', icon: '🤝', earned: false }
+  ];
+
+  const handleMarkComplete = (module: Module) => {
     setModules((prevModules) =>
       prevModules.map((category) => ({
         ...category,
@@ -163,7 +217,7 @@ export const ProfilePage = () => {
         time: new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),
         type: 'completion'
       },
-      ...prevActivity.slice(0, 3) // Keep only the latest 4 activities
+      ...prevActivity.slice(0, 3)
     ]);
     setSelectedModule(null);
   };
@@ -204,16 +258,16 @@ export const ProfilePage = () => {
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {userStats.map((stat, index) => {
-                  const Icon = stat.icon;
-                  return (
-                    <div key={index} className="text-center bg-gray-50 p-4 rounded-lg">
-                      <Icon className="h-6 w-6 mx-auto mb-2 text-blue-600" />
-                      <div className="text-lg font-semibold text-gray-900">{stat.value}</div>
-                      <div className="text-xs text-gray-600">{stat.label}</div>
-                    </div>
-                  );
-                })}
+                {userStats.map((stat, index) => (
+                  <div key={index} className="text-center bg-gray-50 p-4 rounded-lg">
+                    {stat.label === 'Modules Completed' && <Target className="h-6 w-6 mx-auto mb-2 text-blue-600" />}
+                    {stat.label === 'Keys Earned' && <Award className="h-6 w-6 mx-auto mb-2 text-blue-600" />}
+                    {stat.label === 'Days Active' && <Calendar className="h-6 w-6 mx-auto mb-2 text-blue-600" />}
+                    {stat.label === 'Lessons Learned' && <BookOpen className="h-6 w-6 mx-auto mb-2 text-blue-600" />}
+                    <div className="text-lg font-semibold text-gray-900">{stat.value}</div>
+                    <div className="text-xs text-gray-600">{stat.label}</div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
