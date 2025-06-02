@@ -13,6 +13,7 @@ import { ProfilePage } from '@/components/ProfilePage';
 import { NotificationPage } from '@/components/NotificationPage';
 import { SchoolDetails } from '@/components/SchoolDetails';
 import { FrenchIntegrationPage } from '@/components/FrenchIntegrationPage';
+import { DocumentsPage } from '@/components/DocumentsPage';
 import { Header } from '@/components/Header';
 
 const Index = () => {
@@ -77,7 +78,7 @@ const Index = () => {
       icon: '📄',
       color: 'from-teal-500 to-blue-500',
       unlocked: userProgress.unlockedModules.includes('documents'),
-      type: 'checklist'
+      type: 'documents'
     },
     {
       id: 'integration',
@@ -130,6 +131,8 @@ const Index = () => {
         return <NotificationPage />;
       case 'integration':
         return <FrenchIntegrationPage />;
+      case 'documents':
+        return <DocumentsPage />;
       default:
         return (
           <ChecklistModule 
