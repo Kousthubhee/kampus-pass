@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Users, MessageSquare, Share2, Heart, Calendar, Video, Edit, Search, Award, Pin } from 'lucide-react';
-import { Routes, Route, NavLink, useNavigate } from 'react-router-dom';
+import { Routes, Route, NavLink, useNavigate, useLocation } from 'react-router-dom';
 
 const QAPage = ({ posts, onLike, onComment, onReply, onPublishPost }) => {
   const qaPosts = posts.filter(p => p.type === 'post');
@@ -51,7 +51,6 @@ const QAPage = ({ posts, onLike, onComment, onReply, onPublishPost }) => {
                 {item.comments.length}
               </button>
             </div>
-            {/* Comments and Reply logic here (simplified for brevity) */}
           </CardContent>
         </Card>
       ))}
@@ -284,6 +283,8 @@ export const HubPage = () => {
   ]);
   const [newComment, setNewComment] = useState({});
   const navigate = useNavigate();
+  const location = useLocation();
+  const basePath = '/community'; // Adjust this based on your app's structure
 
   const handleLike = (itemId, type) => {
     if (type === 'post' || type === 'reel' || type === 'poll') {
@@ -359,7 +360,8 @@ export const HubPage = () => {
       category: 'General'
     };
     setPosts([newPostObj, ...posts]);
-    navigate('/qa');
+    setNewPost('');
+    navigate(`${basePath}/qa`);
   };
 
   const handleReelUpload = (e) => {
@@ -384,7 +386,7 @@ export const HubPage = () => {
     setPosts([newReelObj, ...posts]);
     setNewReel(null);
     setNewReelCaption('');
-    navigate('/reels');
+    navigate(`${basePath}/reels`);
   };
 
   const handlePublishBlog = (title, content) => {
@@ -401,7 +403,7 @@ export const HubPage = () => {
     setBlogs([newBlog, ...blogs]);
     setBlogTitle('');
     setBlogContent('');
-    navigate('/blogs');
+    navigate(`${basePath}/blogs`);
   };
 
   const addPollOption = () => setPollOptions([...pollOptions, '']);
@@ -428,7 +430,7 @@ export const HubPage = () => {
     setPosts([newPoll, ...posts]);
     setPollQuestion('');
     setPollOptions(['', '']);
-    navigate('/polls');
+    navigate(`${basePath}/polls`);
   };
 
   const handleVotePoll = (pollId, optionIndex) => {
@@ -454,7 +456,7 @@ export const HubPage = () => {
         </p>
         <div className="mt-4 flex justify-center space-x-4">
           <NavLink
-            to="/qa"
+            to={`${basePath}/qa`}
             className={({ isActive }) =>
               `px-4 py-2 rounded ${isActive ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`
             }
@@ -462,7 +464,7 @@ export const HubPage = () => {
             Q&A
           </NavLink>
           <NavLink
-            to="/blogs"
+            to={`${basePath}/blogs`}
             className={({ isActive }) =>
               `px-4 py-2 rounded ${isActive ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`
             }
@@ -470,7 +472,7 @@ export const HubPage = () => {
             Blogs
           </NavLink>
           <NavLink
-            to="/reels"
+            to={`${basePath}/reels`}
             className={({ isActive }) =>
               `px-4 py-2 rounded ${isActive ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`
             }
@@ -478,7 +480,7 @@ export const HubPage = () => {
             Reels
           </NavLink>
           <NavLink
-            to="/polls"
+            to={`${basePath}/polls`}
             className={({ isActive }) =>
               `px-4 py-2 rounded ${isActive ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`
             }
