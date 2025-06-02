@@ -4,228 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Users, MessageSquare, Share2, Heart, Calendar, Video, Edit, Search, Award, Pin } from 'lucide-react';
-import { Routes, Route, NavLink, useNavigate, useLocation } from 'react-router-dom';
-
-const QAPage = ({ posts, onLike, onComment, onReply, onPublishPost }) => {
-  const qaPosts = posts.filter(p => p.type === 'post');
-  return (
-    <div className="space-y-4">
-      <Card>
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Ask a Question</h3>
-          <Textarea
-            placeholder="What's on your mind? Ask a question or share an experience..."
-            className="mb-4 h-20"
-            onChange={(e) => onPublishPost(e.target.value)}
-          />
-          <Button size="sm" onClick={() => onPublishPost()}>
-            <Share2 className="h-4 w-4 mr-2" />
-            Share
-          </Button>
-        </CardContent>
-      </Card>
-      {qaPosts.map((item) => (
-        <Card key={item.id} className="hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center">
-                <div className="text-2xl mr-3">{item.avatar}</div>
-                <div>
-                  <div className="font-semibold text-gray-900">{item.author}</div>
-                  <div className="text-sm text-gray-500">{item.time}</div>
-                </div>
-              </div>
-              <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">{item.category}</span>
-            </div>
-            <p className="text-gray-700 mb-4">{item.content}</p>
-            <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
-              <button
-                className="flex items-center hover:text-red-500"
-                onClick={() => onLike(item.id, item.type)}
-              >
-                <Heart className="h-4 w-4 mr-1" />
-                {item.likes}
-              </button>
-              <button className="flex items-center hover:text-blue-500">
-                <MessageSquare className="h-4 w-4 mr-1" />
-                {item.comments.length}
-              </button>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-};
-
-const BlogPage = ({ blogs, onLike, onComment, onPublishBlog }) => {
-  const [newTitle, setNewTitle] = useState('');
-  const [newContent, setNewContent] = useState('');
-  return (
-    <div className="space-y-4">
-      <Card>
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center">
-            <Edit className="h-5 w-5 mr-2 text-blue-600" />
-            Write a Blog
-          </h3>
-          <Input
-            placeholder="Blog title"
-            className="mb-4"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-          />
-          <Textarea
-            value={newContent}
-            onChange={(e) => setNewContent(e.target.value)}
-            placeholder="Write your blog post here..."
-            className="mb-4 h-40"
-          />
-          <Button size="sm" onClick={() => onPublishBlog(newTitle, newContent)}>
-            <Share2 className="h-4 w-4 mr-2" />
-            Publish
-          </Button>
-        </CardContent>
-      </Card>
-      {blogs.map((item) => (
-        <Card key={item.id} className="hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center">
-                <div className="text-2xl mr-3">{item.avatar || '🧑‍🎓'}</div>
-                <div>
-                  <div className="font-semibold text-gray-900">{item.author}</div>
-                  <div className="text-sm text-gray-500">{item.time}</div>
-                </div>
-              </div>
-            </div>
-            <h4 className="text-lg font-semibold">{item.title}</h4>
-            <p className="text-gray-700 whitespace-pre-wrap">{item.content}</p>
-            <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
-              <button
-                className="flex items-center hover:text-red-500"
-                onClick={() => onLike(item.id, 'blog')}
-              >
-                <Heart className="h-4 w-4 mr-1" />
-                {item.likes}
-              </button>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-};
-
-const ReelPage = ({ posts, onLike, onComment, onPublishReel }) => {
-  const reels = posts.filter(p => p.type === 'reel');
-  const [newReel, setNewReel] = useState(null);
-  const [newCaption, setNewCaption] = useState('');
-  const handleReelUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) setNewReel(URL.createObjectURL(file));
-  };
-  return (
-    <div className="space-y-4">
-      <Card>
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center">
-            <Video className="h-5 w-5 mr-2 text-red-600" />
-            Upload a Reel
-          </h3>
-          <Input type="file" accept="video/*" onChange={handleReelUpload} className="mb-4" />
-          {newReel && <video src={newReel} controls className="w-full rounded-lg mb-4" />}
-          <Textarea
-            placeholder="Add a caption..."
-            className="mb-4"
-            value={newCaption}
-            onChange={(e) => setNewCaption(e.target.value)}
-          />
-          <Button size="sm" onClick={() => onPublishReel(newReel, newCaption)}>
-            <Share2 className="h-4 w-4 mr-2" />
-            Share Reel
-          </Button>
-        </CardContent>
-      </Card>
-      {reels.map((item) => (
-        <Card key={item.id} className="hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center">
-                <div className="text-2xl mr-3">{item.avatar}</div>
-                <div>
-                  <div className="font-semibold text-gray-900">{item.author}</div>
-                  <div className="text-sm text-gray-500">{item.time}</div>
-                </div>
-              </div>
-              <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">{item.category}</span>
-            </div>
-            <video src={item.videoUrl} controls className="w-full rounded-lg mb-4" />
-            <p className="text-gray-700 mt-2">{item.caption}</p>
-            <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
-              <button
-                className="flex items-center hover:text-red-500"
-                onClick={() => onLike(item.id, item.type)}
-              >
-                <Heart className="h-4 w-4 mr-1" />
-                {item.likes}
-              </button>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-};
-
-const PollPage = ({ posts, onLike, onVotePoll }) => {
-  const polls = posts.filter(p => p.type === 'poll');
-  return (
-    <div className="space-y-4">
-      {polls.map((item) => (
-        <Card key={item.id} className="hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center">
-                <div className="text-2xl mr-3">{item.avatar}</div>
-                <div>
-                  <div className="font-semibold text-gray-900">{item.author}</div>
-                  <div className="text-sm text-gray-500">{item.time}</div>
-                </div>
-              </div>
-              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">{item.category}</span>
-            </div>
-            <h4 className="text-lg font-semibold">{item.question}</h4>
-            <div className="space-y-2 mt-2">
-              {item.options.map((option, idx) => (
-                <div key={idx} className="flex items-center justify-between">
-                  <span>{option.text}</span>
-                  <div className="flex items-center space-x-2">
-                    <span>{option.votes} votes</span>
-                    <Button size="sm" onClick={() => onVotePoll(item.id, idx)}>
-                      Vote
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="flex items-center space-x-4 text-sm text-gray-500 mt-4">
-              <button
-                className="flex items-center hover:text-red-500"
-                onClick={() => onLike(item.id, item.type)}
-              >
-                <Heart className="h-4 w-4 mr-1" />
-                {item.likes}
-              </button>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-};
 
 export const HubPage = () => {
+  const [activeTab, setActiveTab] = useState('qa'); // Default to Q&A tab
   const [newPost, setNewPost] = useState('');
   const [newReel, setNewReel] = useState(null);
   const [newReelCaption, setNewReelCaption] = useState('');
@@ -282,9 +63,12 @@ export const HubPage = () => {
     }
   ]);
   const [newComment, setNewComment] = useState({});
-  const navigate = useNavigate();
-  const location = useLocation();
-  const basePath = '/community'; // Adjust this based on your app's structure
+
+  const upcomingEvents = [
+    { id: 1, title: 'Virtual Networking Event', date: 'Dec 15, 2024', time: '7:00 PM CET', attendees: 45 },
+    { id: 2, title: 'French Language Exchange', date: 'Dec 18, 2024', time: '6:30 PM CET', attendees: 23 },
+    { id: 3, title: 'Live Q&A: Visa Tips', date: 'Dec 20, 2024', time: '5:00 PM CET', attendees: 30 }
+  ];
 
   const handleLike = (itemId, type) => {
     if (type === 'post' || type === 'reel' || type === 'poll') {
@@ -346,22 +130,22 @@ export const HubPage = () => {
     setNewComment({ ...newComment, [`reply-${postId}-${commentId}`]: '' });
   };
 
-  const handlePublishPost = (content) => {
-    if (!content) return;
+  const handlePublishPost = () => {
+    if (!newPost) return;
     const newPostObj = {
       id: Date.now(),
       type: 'post',
       author: 'You',
       avatar: '🧑‍🎓',
       time: 'Just now',
-      content,
+      content: newPost,
       likes: 0,
       comments: [],
       category: 'General'
     };
     setPosts([newPostObj, ...posts]);
     setNewPost('');
-    navigate(`${basePath}/qa`);
+    setActiveTab('qa');
   };
 
   const handleReelUpload = (e) => {
@@ -369,16 +153,16 @@ export const HubPage = () => {
     if (file) setNewReel(URL.createObjectURL(file));
   };
 
-  const handlePublishReel = (videoUrl, caption) => {
-    if (!videoUrl || !caption) return;
+  const handlePublishReel = () => {
+    if (!newReel || !newReelCaption) return;
     const newReelObj = {
       id: Date.now(),
       type: 'reel',
       author: 'You',
       avatar: '🧑‍🎓',
       time: 'Just now',
-      videoUrl,
-      caption,
+      videoUrl: newReel,
+      caption: newReelCaption,
       likes: 0,
       comments: [],
       category: 'Travel'
@@ -386,24 +170,24 @@ export const HubPage = () => {
     setPosts([newReelObj, ...posts]);
     setNewReel(null);
     setNewReelCaption('');
-    navigate(`${basePath}/reels`);
+    setActiveTab('reels');
   };
 
-  const handlePublishBlog = (title, content) => {
-    if (!title || !content) return;
+  const handlePublishBlog = () => {
+    if (!blogTitle || !blogContent) return;
     const newBlog = {
       id: Date.now(),
       author: 'You',
-      title,
+      title: blogTitle,
       time: 'Just now',
-      content,
+      content: blogContent,
       likes: 0,
       comments: []
     };
     setBlogs([newBlog, ...blogs]);
     setBlogTitle('');
     setBlogContent('');
-    navigate(`${basePath}/blogs`);
+    setActiveTab('blogs');
   };
 
   const addPollOption = () => setPollOptions([...pollOptions, '']);
@@ -430,7 +214,7 @@ export const HubPage = () => {
     setPosts([newPoll, ...posts]);
     setPollQuestion('');
     setPollOptions(['', '']);
-    navigate(`${basePath}/polls`);
+    setActiveTab('polls');
   };
 
   const handleVotePoll = (pollId, optionIndex) => {
@@ -444,6 +228,10 @@ export const HubPage = () => {
     ));
   };
 
+  const qaPosts = posts.filter(p => p.type === 'post');
+  const reels = posts.filter(p => p.type === 'reel');
+  const polls = posts.filter(p => p.type === 'poll');
+
   return (
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-8">
@@ -455,48 +243,352 @@ export const HubPage = () => {
           Connect with fellow students, share experiences, and get support
         </p>
         <div className="mt-4 flex justify-center space-x-4">
-          <NavLink
-            to={`${basePath}/qa`}
-            className={({ isActive }) =>
-              `px-4 py-2 rounded ${isActive ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`
-            }
+          <button
+            className={`px-4 py-2 rounded ${activeTab === 'qa' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+            onClick={() => setActiveTab('qa')}
           >
             Q&A
-          </NavLink>
-          <NavLink
-            to={`${basePath}/blogs`}
-            className={({ isActive }) =>
-              `px-4 py-2 rounded ${isActive ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`
-            }
+          </button>
+          <button
+            className={`px-4 py-2 rounded ${activeTab === 'blogs' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+            onClick={() => setActiveTab('blogs')}
           >
             Blogs
-          </NavLink>
-          <NavLink
-            to={`${basePath}/reels`}
-            className={({ isActive }) =>
-              `px-4 py-2 rounded ${isActive ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`
-            }
+          </button>
+          <button
+            className={`px-4 py-2 rounded ${activeTab === 'reels' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+            onClick={() => setActiveTab('reels')}
           >
             Reels
-          </NavLink>
-          <NavLink
-            to={`${basePath}/polls`}
-            className={({ isActive }) =>
-              `px-4 py-2 rounded ${isActive ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`
-            }
+          </button>
+          <button
+            className={`px-4 py-2 rounded ${activeTab === 'polls' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+            onClick={() => setActiveTab('polls')}
           >
             Polls
-          </NavLink>
+          </button>
         </div>
       </div>
 
-      <Routes>
-        <Route path="/qa" element={<QAPage posts={posts} onLike={handleLike} onComment={handleComment} onReply={handleReply} onPublishPost={handlePublishPost} />} />
-        <Route path="/blogs" element={<BlogPage blogs={blogs} onLike={handleLike} onComment={handleComment} onPublishBlog={handlePublishBlog} />} />
-        <Route path="/reels" element={<ReelPage posts={posts} onLike={handleLike} onComment={handleComment} onPublishReel={handlePublishReel} />} />
-        <Route path="/polls" element={<PollPage posts={posts} onLike={handleLike} onVotePoll={handleVotePoll} />} />
-        <Route path="/" element={<QAPage posts={posts} onLike={handleLike} onComment={handleComment} onReply={handleReply} onPublishPost={handlePublishPost} />} />
-      </Routes>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          {/* Q&A Section */}
+          {activeTab === 'qa' && (
+            <>
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-4">Ask a Question</h3>
+                  <Textarea
+                    placeholder="What's on your mind? Ask a question or share an experience..."
+                    className="mb-4 h-20"
+                    value={newPost}
+                    onChange={(e) => setNewPost(e.target.value)}
+                  />
+                  <Button size="sm" onClick={handlePublishPost}>
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Share
+                  </Button>
+                </CardContent>
+              </Card>
+              {qaPosts.map((item) => (
+                <Card key={item.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center">
+                        <div className="text-2xl mr-3">{item.avatar}</div>
+                        <div>
+                          <div className="font-semibold text-gray-900">{item.author}</div>
+                          <div className="text-sm text-gray-500">{item.time}</div>
+                        </div>
+                      </div>
+                      <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">{item.category}</span>
+                    </div>
+                    <p className="text-gray-700 mb-4">{item.content}</p>
+                    <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
+                      <button
+                        className="flex items-center hover:text-red-500"
+                        onClick={() => handleLike(item.id, item.type)}
+                      >
+                        <Heart className="h-4 w-4 mr-1" />
+                        {item.likes}
+                      </button>
+                      <button className="flex items-center hover:text-blue-500">
+                        <MessageSquare className="h-4 w-4 mr-1" />
+                        {item.comments.length}
+                      </button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </>
+          )}
+
+          {/* Blogs Section */}
+          {activeTab === 'blogs' && (
+            <>
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                    <Edit className="h-5 w-5 mr-2 text-blue-600" />
+                    Write a Blog
+                  </h3>
+                  <Input
+                    placeholder="Blog title"
+                    className="mb-4"
+                    value={blogTitle}
+                    onChange={(e) => setBlogTitle(e.target.value)}
+                  />
+                  <Textarea
+                    value={blogContent}
+                    onChange={(e) => setBlogContent(e.target.value)}
+                    placeholder="Write your blog post here..."
+                    className="mb-4 h-40"
+                  />
+                  <Button size="sm" onClick={handlePublishBlog}>
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Publish
+                  </Button>
+                </CardContent>
+              </Card>
+              {blogs.map((item) => (
+                <Card key={item.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center">
+                        <div className="text-2xl mr-3">{item.avatar || '🧑‍🎓'}</div>
+                        <div>
+                          <div className="font-semibold text-gray-900">{item.author}</div>
+                          <div className="text-sm text-gray-500">{item.time}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <h4 className="text-lg font-semibold">{item.title}</h4>
+                    <p className="text-gray-700 whitespace-pre-wrap">{item.content}</p>
+                    <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
+                      <button
+                        className="flex items-center hover:text-red-500"
+                        onClick={() => handleLike(item.id, 'blog')}
+                      >
+                        <Heart className="h-4 w-4 mr-1" />
+                        {item.likes}
+                      </button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </>
+          )}
+
+          {/* Reels Section */}
+          {activeTab === 'reels' && (
+            <>
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                    <Video className="h-5 w-5 mr-2 text-red-600" />
+                    Upload a Reel
+                  </h3>
+                  <Input type="file" accept="video/*" onChange={handleReelUpload} className="mb-4" />
+                  {newReel && <video src={newReel} controls className="w-full rounded-lg mb-4" />}
+                  <Textarea
+                    placeholder="Add a caption..."
+                    className="mb-4"
+                    value={newReelCaption}
+                    onChange={(e) => setNewReelCaption(e.target.value)}
+                  />
+                  <Button size="sm" onClick={handlePublishReel}>
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Share Reel
+                  </Button>
+                </CardContent>
+              </Card>
+              {reels.map((item) => (
+                <Card key={item.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center">
+                        <div className="text-2xl mr-3">{item.avatar}</div>
+                        <div>
+                          <div className="font-semibold text-gray-900">{item.author}</div>
+                          <div className="text-sm text-gray-500">{item.time}</div>
+                        </div>
+                      </div>
+                      <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">{item.category}</span>
+                    </div>
+                    <video src={item.videoUrl} controls className="w-full rounded-lg mb-4" />
+                    <p className="text-gray-700 mt-2">{item.caption}</p>
+                    <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
+                      <button
+                        className="flex items-center hover:text-red-500"
+                        onClick={() => handleLike(item.id, item.type)}
+                      >
+                        <Heart className="h-4 w-4 mr-1" />
+                        {item.likes}
+                      </button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </>
+          )}
+
+          {/* Polls Section */}
+          {activeTab === 'polls' && (
+            <>
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-4">Create a Poll</h3>
+                  <Input
+                    placeholder="Poll question"
+                    value={pollQuestion}
+                    onChange={(e) => setPollQuestion(e.target.value)}
+                    className="mb-4"
+                  />
+                  {pollOptions.map((option, index) => (
+                    <Input
+                      key={index}
+                      placeholder={`Option ${index + 1}`}
+                      value={option}
+                      onChange={(e) => updatePollOption(index, e.target.value)}
+                      className="mb-2"
+                    />
+                  ))}
+                  <Button variant="outline" size="sm" onClick={addPollOption} className="mb-4">
+                    Add Option
+                  </Button>
+                  <Button size="sm" onClick={handlePublishPoll}>
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Share Poll
+                  </Button>
+                </CardContent>
+              </Card>
+              {polls.map((item) => (
+                <Card key={item.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center">
+                        <div className="text-2xl mr-3">{item.avatar}</div>
+                        <div>
+                          <div className="font-semibold text-gray-900">{item.author}</div>
+                          <div className="text-sm text-gray-500">{item.time}</div>
+                        </div>
+                      </div>
+                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">{item.category}</span>
+                    </div>
+                    <h4 className="text-lg font-semibold">{item.question}</h4>
+                    <div className="space-y-2 mt-2">
+                      {item.options.map((option, idx) => (
+                        <div key={idx} className="flex items-center justify-between">
+                          <span>{option.text}</span>
+                          <div className="flex items-center space-x-2">
+                            <span>{option.votes} votes</span>
+                            <Button size="sm" onClick={() => handleVotePoll(item.id, idx)}>
+                              Vote
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center space-x-4 text-sm text-gray-500 mt-4">
+                      <button
+                        className="flex items-center hover:text-red-500"
+                        onClick={() => handleLike(item.id, item.type)}
+                      >
+                        <Heart className="h-4 w-4 mr-1" />
+                        {item.likes}
+                      </button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </>
+          )}
+        </div>
+
+        <div className="space-y-6">
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="text-lg font-semibold mb-4 flex items-center">
+                <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+                Upcoming Events
+              </h3>
+              <div className="space-y-4">
+                {upcomingEvents.map((event) => (
+                  <div key={event.id} className="bg-blue-50 p-4 rounded-lg">
+                    <div className="font-semibold text-blue-900">{event.title}</div>
+                    <div className="text-sm text-blue-700">{event.date} at {event.time}</div>
+                    <div className="text-xs text-blue-600 mt-1">{event.attendees} attending</div>
+                    <Button size="sm" className="mt-2 w-full">Join Event</Button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="text-lg font-semibold mb-4 flex items-center">
+                <Award className="h-5 w-5 mr-2 text-yellow-600" />
+                Achievements
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-center">
+                  <span className="text-yellow-600 mr-2">🏆</span>
+                  <span>Top Contributor</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="text-yellow-600 mr-2">🌟</span>
+                  <span>Helpful Mentor</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="text-yellow-600 mr-2">🎉</span>
+                  <span>Community Star</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="text-lg font-semibold mb-4">Community Stats</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Active Members</span>
+                  <span className="font-semibold">1,247</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Posts This Week</span>
+                  <span className="font-semibold">{posts.filter(p => p.time === 'Just now').length + 89}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Questions Answered</span>
+                  <span className="font-semibold">{posts.reduce((acc, post) => acc + post.comments.length, 0) + 156}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="text-lg font-semibold mb-4">Quick Help</h3>
+              <div className="space-y-2">
+                <Button variant="outline" className="w-full justify-start">
+                  📋 Post a Question
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  🤝 Find Study Partner
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  🏠 Housing Exchange
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  📚 Share Resources
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
