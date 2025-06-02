@@ -1,8 +1,8 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, CheckCircle, Clock, FileText } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Clock, FileText, X } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface ModuleContentProps {
   module: any;
@@ -11,32 +11,96 @@ interface ModuleContentProps {
   isCompleted: boolean;
 }
 
+interface StepDetails {
+  id: string;
+  title: string;
+  description: string;
+  content?: string;
+}
+
 export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: ModuleContentProps) => {
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
+  const [selectedStep, setSelectedStep] = useState<StepDetails | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const getModuleSteps = (moduleId: string) => {
+  const getModuleSteps = (moduleId: string): StepDetails[] => {
     switch (moduleId) {
       case 'pre-arrival-1':
         return [
-          { id: 'campus-france', title: 'Campus France Registration', description: 'Create account and submit application' },
-          { id: 'vfs', title: 'VFS Appointment', description: 'Book and attend visa appointment' },
-          { id: 'documents', title: 'Document Preparation', description: 'Gather all required documents' },
-          { id: 'visa-fee', title: 'Visa Fee Payment', description: 'Pay visa processing fees' }
+          { 
+            id: 'campus-france', 
+            title: 'Campus France Registration', 
+            description: 'Create account and submit application',
+            content: `
+              <h3 class="font-bold text-lg mb-2">Detailed Steps:</h3>
+              <ol class="list-decimal pl-5 space-y-2">
+                <li>Visit the Campus France website for your country</li>
+                <li>Create an account on the "Études en France" portal</li>
+                <li>Fill in personal, academic, and program details</li>
+                <li>Upload required documents (passport, transcripts, etc.)</li>
+                <li>Submit the application and pay the Campus France fee</li>
+                <li>Attend an academic interview if required</li>
+                <li>Receive Campus France approval</li>
+              </ol>
+              <p class="mt-4 text-sm text-gray-600">Mark as complete once you receive confirmation from Campus France.</p>
+            `
+          },
+          { 
+            id: 'vfs', 
+            title: 'VFS Appointment', 
+            description: 'Book and attend visa appointment',
+            content: `
+              <h3 class="font-bold text-lg mb-2">Detailed Steps:</h3>
+              <ol class="list-decimal pl-5 space-y-2">
+                <li>Visit the France-Visas website and complete the online form</li>
+                <li>Receive a France-Visas reference number</li>
+                <li>Book an appointment via VFS Global or consulate website</li>
+                <li>Choose a convenient date and location</li>
+                <li>Attend the appointment with all required documents</li>
+              </ol>
+              <p class="mt-4 text-sm text-gray-600">Mark as complete after attending your appointment.</p>
+            `
+          },
+          // Add similar content for other steps...
         ];
       case 'pre-arrival-2':
         return [
-          { id: 'clothing', title: 'Climate-Appropriate Clothing', description: 'Pack clothes suitable for French weather' },
-          { id: 'food-research', title: 'Food & Dietary Research', description: 'Learn about French cuisine and dietary options' },
-          { id: 'cultural-prep', title: 'Cultural Preparation', description: 'Understand French customs and etiquette' },
-          { id: 'language-basics', title: 'Basic French Learning', description: 'Learn essential French phrases' }
+          { 
+            id: 'clothing', 
+            title: 'Climate-Appropriate Clothing', 
+            description: 'Pack clothes suitable for French weather',
+            content: `
+              <h3 class="font-bold text-lg mb-2">Packing Guide:</h3>
+              <ul class="list-disc pl-5 space-y-2">
+                <li><strong>Winter (Dec-Feb):</strong> Thermal layers, warm coat, gloves, scarf, waterproof boots</li>
+                <li><strong>Spring (Mar-May):</strong> Light jackets, sweaters, umbrella</li>
+                <li><strong>Summer (Jun-Aug):</strong> Lightweight clothes, sunscreen, sunglasses</li>
+                <li><strong>Autumn (Sep-Nov):</strong> Layers, waterproof jacket, boots</li>
+              </ul>
+              <p class="mt-4 text-sm text-gray-600">Consider regional variations - North is cooler, South is warmer.</p>
+            `
+          },
+          // Add similar content for other steps...
         ];
       case 'post-arrival':
         return [
-          { id: 'bank-account', title: 'Open Bank Account', description: 'Set up French bank account' },
-          { id: 'ssn-equivalent', title: 'Social Security Number', description: 'Obtain French social security number' },
-          { id: 'insurance', title: 'Health Insurance', description: 'Enroll in French health insurance' },
-          { id: 'caf', title: 'CAF Application', description: 'Apply for housing assistance (CAF)' },
-          { id: 'phone-plan', title: 'Phone Plan', description: 'Set up French mobile phone plan' }
+          { 
+            id: 'bank-account', 
+            title: 'Open Bank Account', 
+            description: 'Set up French bank account',
+            content: `
+              <h3 class="font-bold text-lg mb-2">Bank Account Setup:</h3>
+              <ol class="list-decimal pl-5 space-y-2">
+                <li>Choose a bank (popular options: Société Générale, BNP Paribas, LCL)</li>
+                <li>Prepare documents: Passport, visa, proof of enrollment, proof of address</li>
+                <li>Book an appointment (some banks allow online pre-registration)</li>
+                <li>Sign the contract and receive your RIB (bank details)</li>
+                <li>Wait for your debit card (usually 1-2 weeks)</li>
+              </ol>
+              <p class="mt-4 text-sm text-gray-600">Mark as complete once your account is active.</p>
+            `
+          },
+          // Add similar content for other steps...
         ];
       default:
         return [
@@ -57,6 +121,11 @@ export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: Modul
 
   const handleModuleComplete = () => {
     onComplete(module.id);
+  };
+
+  const openStepDetails = (step: StepDetails) => {
+    setSelectedStep(step);
+    setIsDialogOpen(true);
   };
 
   return (
@@ -92,7 +161,11 @@ export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: Modul
           const isStepCompleted = completedSteps.includes(step.id);
           
           return (
-            <Card key={step.id} className={`${isStepCompleted ? 'ring-2 ring-green-500' : ''}`}>
+            <Card 
+              key={step.id} 
+              className={`${isStepCompleted ? 'ring-2 ring-green-500' : ''} cursor-pointer hover:shadow-md transition-shadow`}
+              onClick={() => openStepDetails(step)}
+            >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
@@ -113,7 +186,10 @@ export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: Modul
                     {!isStepCompleted && (
                       <Button 
                         size="sm"
-                        onClick={() => handleStepComplete(step.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStepComplete(step.id);
+                        }}
                       >
                         Mark Complete
                       </Button>
@@ -128,6 +204,46 @@ export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: Modul
           );
         })}
       </div>
+
+      {/* Step Details Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex justify-between items-center">
+              <span>{selectedStep?.title}</span>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setIsDialogOpen(false)}
+                className="h-8 w-8"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </DialogTitle>
+          </DialogHeader>
+          {selectedStep?.content && (
+            <div 
+              className="prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{ __html: selectedStep.content }}
+            />
+          )}
+          <div className="flex justify-end mt-4">
+            <Button 
+              onClick={() => {
+                if (selectedStep?.id && !completedSteps.includes(selectedStep.id)) {
+                  handleStepComplete(selectedStep.id);
+                }
+                setIsDialogOpen(false);
+              }}
+              disabled={selectedStep?.id && completedSteps.includes(selectedStep.id)}
+            >
+              {selectedStep?.id && completedSteps.includes(selectedStep.id) 
+                ? 'Step Completed' 
+                : 'Mark as Complete'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="mt-8 text-center">
         {completedSteps.length === steps.length && !isCompleted && (
