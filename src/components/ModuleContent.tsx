@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -56,7 +55,7 @@ export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: Modul
   };
 
   const handleModuleComplete = () => {
-    onComplete(module.id);
+    onComplete(module.id); // This will handle the completion logic without redirect
   };
 
   return (
@@ -144,6 +143,7 @@ export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: Modul
                 <Button 
                   onClick={handleModuleComplete}
                   className="bg-green-600 hover:bg-green-700"
+                  // No additional onClick handler that would cause redirect
                 >
                   Complete Module & Earn Key 🗝️
                 </Button>
