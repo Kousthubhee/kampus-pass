@@ -72,15 +72,6 @@ const Index = () => {
       type: 'checklist'
     },
     {
-      id: 'documents',
-      title: 'Documents & Renewals',
-      description: 'Important paperwork and renewal processes',
-      icon: '📄',
-      color: 'from-teal-500 to-blue-500',
-      unlocked: userProgress.unlockedModules.includes('documents'),
-      type: 'documents'
-    },
-    {
       id: 'integration',
       title: 'French Integration',
       description: 'Cultural adaptation and social integration',
@@ -88,7 +79,17 @@ const Index = () => {
       color: 'from-rose-500 to-pink-500',
       unlocked: userProgress.unlockedModules.includes('integration'),
       type: 'integration'
-    }
+    },
+    {
+      id: 'finance',
+      title: 'Tracking your Finances',
+      description: 'Important paperwork and renewal processes',
+      icon: '📄',
+      color: 'from-teal-500 to-blue-500',
+      unlocked: userProgress.unlockedModules.includes('documents'),
+      type: 'documents'
+    },
+    
   ];
 
   const renderCurrentPage = () => {
@@ -162,7 +163,7 @@ const Index = () => {
           </main>
           <footer className="bg-white border-t border-gray-200 py-4 px-6">
             <div className="text-center text-gray-600">
-              © 2025<span className="text-blue-600 font-semibold">  Kousthubhee</span> & <span className="text-cyan-600 font-semibold">Srivatsava</span>
+             🎓 © {new Date().getFullYear()} <span className="text-blue-600 font-semibold">  Kousthubhee Krishna K</span> & <span className="text-cyan-600 font-semibold">Srivatsava CK</span>
             </div>
           </footer>
         </div>
