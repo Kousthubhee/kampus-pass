@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { FileText, Plus, Bell, Calendar, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { FileText, Plus, Bell, Calendar, AlertTriangle, CheckCircle, Clock, Trash2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from '@/components/ui/sonner';
 
@@ -16,6 +17,7 @@ interface Document {
   status: 'valid' | 'expiring' | 'expired';
   renewalProcess: string[];
   notificationEnabled: boolean;
+  notes?: string;
 }
 
 export const DocumentsPage = () => {
@@ -34,7 +36,8 @@ export const DocumentsPage = () => {
         'Pay renewal fees',
         'Submit application at prefecture'
       ],
-      notificationEnabled: true
+      notificationEnabled: true,
+      notes: 'Remember to bring original documents and copies'
     },
     {
       id: '2',
@@ -49,7 +52,8 @@ export const DocumentsPage = () => {
         'Schedule prefecture appointment',
         'Submit renewal application'
       ],
-      notificationEnabled: true
+      notificationEnabled: true,
+      notes: 'Keep proof of previous permits'
     }
   ]);
 
@@ -59,7 +63,8 @@ export const DocumentsPage = () => {
     type: '',
     submissionDate: '',
     expiryDate: '',
-    renewalProcess: ''
+    renewalProcess: '',
+    notes: ''
   });
 
   const calculateStatus = (expiryDate: string): 'valid' | 'expiring' | 'expired' => {
@@ -73,19 +78,29 @@ export const DocumentsPage = () => {
   };
 
   const handleAddDocument = () => {
+    if (!newDocument.name || !newDocument.type || !newDocument.submissionDate || !newDocument.expiryDate) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
     const status = calculateStatus(newDocument.expiryDate);
     const newDoc: Document = {
       id: Date.now().toString(),
       ...newDocument,
       status,
-      renewalProcess: newDocument.renewalProcess.split('\n'),
+      renewalProcess: newDocument.renewalProcess.split('\n').filter(step => step.trim()),
       notificationEnabled: true
     };
 
     setDocuments([...documents, newDoc]);
     setIsAddDialogOpen(false);
-    setNewDocument({ name: '', type: '', submissionDate: '', expiryDate: '', renewalProcess: '' });
+    setNewDocument({ name: '', type: '', submissionDate: '', expiryDate: '', renewalProcess: '', notes: '' });
     toast.success('Document added successfully');
+  };
+
+  const deleteDocument = (docId: string) => {
+    setDocuments(documents.filter(doc => doc.id !== docId));
+    toast.success('Document deleted successfully');
   };
 
   const toggleNotification = (docId: string) => {
@@ -178,16 +193,33 @@ export const DocumentsPage = () => {
                       ))}
                     </ul>
                   </div>
+
+                  {doc.notes && (
+                    <div className="mt-4 bg-gray-50 p-3 rounded-md">
+                      <h4 className="font-medium text-gray-900 mb-1">Notes:</h4>
+                      <p className="text-sm text-gray-600">{doc.notes}</p>
+                    </div>
+                  )}
                 </div>
 
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={doc.notificationEnabled ? 'text-blue-600' : 'text-gray-400'}
-                  onClick={() => toggleNotification(doc.id)}
-                >
-                  <Bell className="h-4 w-4" />
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={doc.notificationEnabled ? 'text-blue-600' : 'text-gray-400'}
+                    onClick={() => toggleNotification(doc.id)}
+                  >
+                    <Bell className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-600"
+                    onClick={() => deleteDocument(doc.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
 
               <div className="mt-4 flex items-center justify-between">
@@ -213,6 +245,7 @@ export const DocumentsPage = () => {
                 value={newDocument.name}
                 onChange={(e) => setNewDocument({ ...newDocument, name: e.target.value })}
                 placeholder="e.g., Student Visa"
+                required
               />
             </div>
             <div>
@@ -222,6 +255,7 @@ export const DocumentsPage = () => {
                 value={newDocument.type}
                 onChange={(e) => setNewDocument({ ...newDocument, type: e.target.value })}
                 placeholder="e.g., Immigration"
+                required
               />
             </div>
             <div>
@@ -231,6 +265,7 @@ export const DocumentsPage = () => {
                 type="date"
                 value={newDocument.submissionDate}
                 onChange={(e) => setNewDocument({ ...newDocument, submissionDate: e.target.value })}
+                required
               />
             </div>
             <div>
@@ -240,6 +275,7 @@ export const DocumentsPage = () => {
                 type="date"
                 value={newDocument.expiryDate}
                 onChange={(e) => setNewDocument({ ...newDocument, expiryDate: e.target.value })}
+                required
               />
             </div>
             <div>
@@ -250,6 +286,16 @@ export const DocumentsPage = () => {
                 onChange={(e) => setNewDocument({ ...newDocument, renewalProcess: e.target.value })}
                 placeholder="Step 1&#10;Step 2&#10;Step 3"
                 className="h-32"
+              />
+            </div>
+            <div>
+              <Label htmlFor="notes">Additional Notes</Label>
+              <Textarea
+                id="notes"
+                value={newDocument.notes}
+                onChange={(e) => setNewDocument({ ...newDocument, notes: e.target.value })}
+                placeholder="Add any important notes or reminders..."
+                className="h-20"
               />
             </div>
             <div className="flex justify-end gap-2">
