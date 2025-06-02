@@ -15,7 +15,7 @@ interface HeaderProps {
 export const Header = ({ currentPage, setCurrentPage, userProgress }: HeaderProps) => {
   const getPageTitle = () => {
     switch (currentPage) {
-      case 'checklist': return 'Checklist - Begin Your Journey';
+      case 'checklist': return 'Checklist';
       case 'documents': return 'Documents & Renewals';
       case 'qa': return 'Ask Me Anything';
       case 'hub': return 'Community Hub';
