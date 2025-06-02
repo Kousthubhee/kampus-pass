@@ -312,11 +312,85 @@ export const HubPage = () => {
                         <Heart className="h-4 w-4 mr-1" />
                         {item.likes}
                       </button>
-                      <button className="flex items-center hover:text-blue-500">
+                      <span className="flex items-center">
                         <MessageSquare className="h-4 w-4 mr-1" />
                         {item.comments.length}
-                      </button>
+                      </span>
                     </div>
+
+                    {/* Comment Section */}
+                    <div className="mt-4">
+                      <Textarea
+                        placeholder="Write a comment..."
+                        className="mb-2 h-16"
+                        value={newComment[`${item.type}-${item.id}`] || ''}
+                        onChange={(e) =>
+                          setNewComment({
+                            ...newComment,
+                            [`${item.type}-${item.id}`]: e.target.value
+                          })
+                        }
+                      />
+                      <Button
+                        size="sm"
+                        onClick={() => handleComment(item.id, item.type)}
+                        disabled={!newComment[`${item.type}-${item.id}`]}
+                      >
+                        Comment
+                      </Button>
+                    </div>
+
+                    {/* Display Comments */}
+                    {item.comments.length > 0 && (
+                      <div className="mt-4 space-y-4">
+                        {item.comments.map((comment) => (
+                          <div key={comment.id} className="border-l-2 border-gray-200 pl-4">
+                            <div className="flex items-center mb-2">
+                              <span className="font-semibold text-gray-900 mr-2">{comment.author}</span>
+                              <span className="text-sm text-gray-500">{comment.time || 'Just now'}</span>
+                            </div>
+                            <p className="text-gray-700 mb-2">{comment.content}</p>
+
+                            {/* Reply Input */}
+                            <div className="mt-2">
+                              <Input
+                                placeholder="Write a reply..."
+                                className="mb-2"
+                                value={newComment[`reply-${item.id}-${comment.id}`] || ''}
+                                onChange={(e) =>
+                                  setNewComment({
+                                    ...newComment,
+                                    [`reply-${item.id}-${comment.id}`]: e.target.value
+                                  })
+                                }
+                              />
+                              <Button
+                                size="sm"
+                                onClick={() => handleReply(item.id, comment.id)}
+                                disabled={!newComment[`reply-${item.id}-${comment.id}`]}
+                              >
+                                Reply
+                              </Button>
+                            </div>
+
+                            {/* Display Replies */}
+                            {comment.replies && comment.replies.length > 0 && (
+                              <div className="mt-2 space-y-2 pl-4">
+                                {comment.replies.map((reply) => (
+                                  <div key={reply.id} className="border-l-2 border-gray-300 pl-4">
+                                    <div className="flex items-center mb-1">
+                                      <span className="font-semibold text-gray-900 mr-2">{reply.author}</span>
+                                      <span className="text-sm text-gray-500">{reply.time || 'Just now'}</span>
+                                    </div>
+                                    <p className="text-gray-700">{reply.content}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))}
