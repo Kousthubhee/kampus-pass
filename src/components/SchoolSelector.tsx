@@ -57,32 +57,32 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
       localInsights: [
         {
           title: "Transportation",
-          description: "Navigate Paris efficiently with metro, buses, and bikes",
+          description: "Navigate Paris efficiently with metro, buses, bikes, and intercity options",
           tips: [
-            "Get a Navigo weekly/monthly pass for unlimited metro travel",
-            "Use Citymapper app for real-time transport information",
-            "Vélib' bikes are perfect for short distances",
-            "Night buses (Noctilien) run when metro is closed"
+            "Get a Navigo card (€350/year student pass) via the Île-de-France Mobilités app for unlimited Métro, bus, and tram travel",
+            "Use Vélib’ bikes through the Vélib’ Métropole app for short trips",
+            "FlixBus connects to Lyon, Toulouse, and more from Paris-Bercy Seine—book via the FlixBus app (from €5)",
+            "SNCF TGV trains to other cities (e.g., Lyon in 2 hours) via SNCF Connect app"
           ]
         },
         {
-          title: "Housing",
-          description: "Finding accommodation in the competitive Paris market",
+          title: "Student Life & Culture",
+          description: "Paris blends historic charm with a vibrant student scene",
           tips: [
-            "Start looking 2-3 months before arrival",
-            "Use platforms like LeBonCoin, SeLoger, PAP",
-            "Consider student residences (CROUS) for affordable options",
-            "Budget 30-40% of income for rent"
+            "Hang out in the Latin Quarter for cheap eats like falafel (€6-8) at Rue Mouffetard",
+            "Join student associations (BDE) at your school for networking",
+            "Visit museums like the Louvre for free if you're an EU student under 26",
+            "Attend Fête de la Musique (June 21) for free concerts across the city"
           ]
         },
         {
-          title: "Student Life",
-          description: "Making the most of student life in Paris",
+          title: "Recreation & Sports",
+          description: "Find spots for sports and relaxation in the city",
           tips: [
-            "Join student associations (BDE) at your school",
-            "Take advantage of student discounts everywhere",
-            "Visit museums on first Sunday mornings (often free)",
-            "Explore different neighborhoods - each has its character"
+            "Book badminton courts at Gymnase Rosa Parks via Anybuddy",
+            "Informal cricket games at Bois de Vincennes with expat groups—football is more common",
+            "Relax or study at Parc des Buttes-Chaumont with scenic views",
+            "Explore must-visit spots like the Eiffel Tower, Notre-Dame, and Sacré-Cœur"
           ]
         }
       ]
@@ -103,20 +103,30 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
           title: "Transportation",
           description: "Efficient public transport system in Lyon",
           tips: [
-            "TCL card covers metro, tram, and bus",
-            "Vélo'v bike sharing system throughout the city",
-            "Walking is pleasant in the city center",
-            "Student discounts available on monthly passes"
+            "TCL card (€35/month student pass) via TCL Compte Mobilité app covers metro, tram, and bus",
+            "Velo’v bike rentals through the Velo’v app—great for Presqu’île",
+            "FlixBus from Lyon Perrache to Paris, Toulouse, etc. (from €15) via FlixBus app",
+            "SNCF TGV to Paris in 2 hours—book via SNCF Connect app"
           ]
         },
         {
-          title: "Food Culture",
+          title: "Food & Culture",
           description: "Lyon is the gastronomic capital of France",
           tips: [
-            "Try traditional Lyonnaise cuisine in 'bouchons'",
-            "Visit Les Halles de Lyon food market",
-            "Student restaurants offer affordable meals",
-            "Many restaurants offer student menus"
+            "Try Lyonnaise cuisine at bouchons like Le Café des Fédérations (€15 with student discounts)",
+            "Visit Les Halles de Lyon food market for local flavors",
+            "Attend Fête des Lumières (December 5-8)—volunteer for free access",
+            "Hang out at Les Berges du Rhône for cheap drinks and picnics"
+          ]
+        },
+        {
+          title: "Recreation & Sports",
+          description: "Explore parks and sports facilities in Lyon",
+          tips: [
+            "Book badminton courts at Gymnase Bellecombe via Anybuddy",
+            "Parc de la Tête d’Or for informal cricket with expat groups, or rugby",
+            "Relax at Parc de la Tête d’Or—enjoy fields, a lake, and a free zoo",
+            "Must-visit: Vieux Lyon, Basilique Notre-Dame de Fourvière"
           ]
         }
       ]
@@ -134,13 +144,33 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
       ],
       localInsights: [
         {
-          title: "Aerospace Industry",
-          description: "Hub of European aerospace with Airbus",
+          title: "Transportation",
+          description: "Get around Toulouse with ease",
           tips: [
-            "Visit Cité de l'espace for aerospace inspiration",
-            "Network with aerospace professionals",
-            "Internship opportunities at Airbus and suppliers",
-            "Join aerospace student clubs"
+            "Tisséo metro, trams, and buses (€15/month student pass) via Tisséo Collectivités app",
+            "VélôToulouse bikes through the VélôToulouse app—perfect for flat terrain",
+            "FlixBus to Bordeaux, Paris, etc. (from €9) via FlixBus app",
+            "SNCF TGV to Paris in 4 hours via SNCF Connect app"
+          ]
+        },
+        {
+          title: "Aerospace & Lifestyle",
+          description: "Toulouse is a hub for aerospace with a sunny vibe",
+          tips: [
+            "Visit Cité de l’Espace for aerospace inspiration",
+            "Network with Airbus professionals for internships",
+            "Enjoy Toulouse Plages (July-August) for free riverbank events",
+            "Hang out at Place Saint-Pierre for €2 beers at Le Saint des Seins"
+          ]
+        },
+        {
+          title: "Recreation & Sports",
+          description: "Find spots for sports and relaxation",
+          tips: [
+            "Book badminton courts at Gymnase Saint-Sernin via Anybuddy",
+            "Prairie des Filtres for informal cricket with expat groups—football is more common",
+            "Relax at Jardin des Plantes with open spaces",
+            "Must-visit: Basilique de Saint-Sernin, Place du Capitole"
           ]
         }
       ]
@@ -157,13 +187,33 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
       ],
       localInsights: [
         {
-          title: "Cost of Living",
-          description: "More affordable than Paris with good quality of life",
+          title: "Transportation",
+          description: "Navigate Rouen with ease",
           tips: [
-            "Lower rent prices compared to Paris",
-            "Good public transportation",
-            "Close to Paris (1.5 hours by train)",
-            "Rich historical and cultural heritage"
+            "Astuce network (€30/month student pass) via My Astuce app for TEOR buses, trams, and Calypso shuttle",
+            "Lovélo bike rentals through the Lovélo app",
+            "FlixBus to Paris, Lyon, etc. (from €7) via FlixBus app from 33 Avenue Champlain",
+            "SNCF trains to Paris in 1 hour via SNCF Connect app"
+          ]
+        },
+        {
+          title: "Culture & Events",
+          description: "Experience Rouen's rich history and events",
+          tips: [
+            "Attend Jeanne d’Arc Festival (May 31, 2025) for parades and markets",
+            "Explore the medieval old town—Rue du Gros-Horloge has €7-10 crêperies",
+            "Le Marignan bar near the cathedral offers €3 drinks on Thursdays",
+            "Visit Cathédrale Notre-Dame and Jeanne d’Arc Tower"
+          ]
+        },
+        {
+          title: "Recreation & Sports",
+          description: "Find spots for sports and relaxation",
+          tips: [
+            "Book badminton courts at Gymnase Saint-Exupéry via local clubs",
+            "Jardins de l’Hôtel de Ville for informal cricket with expat groups—rugby is more popular",
+            "Relax at Parc de Grammont with trails",
+            "Must-visit: Musée des Beaux-Arts for cultural outings"
           ]
         }
       ]
@@ -180,13 +230,33 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
       ],
       localInsights: [
         {
-          title: "Champagne Culture",
-          description: "Heart of the Champagne region",
+          title: "Transportation",
+          description: "Get around Reims efficiently",
           tips: [
-            "Visit champagne houses for tours",
-            "Learn about wine culture and history",
-            "Network at wine-related events",
-            "Affordable student life in smaller city"
+            "Citura buses and trams (€25/month student pass) via Citura app",
+            "Walk or bike—Reims is compact",
+            "FlixBus to Paris, Lyon, etc. (from €7) via FlixBus app",
+            "SNCF TGV to Paris in 45 minutes via SNCF Connect app"
+          ]
+        },
+        {
+          title: "Champagne Culture",
+          description: "Immerse in the heart of the Champagne region",
+          tips: [
+            "Visit champagne houses like Pommery for student tours (€10-15)",
+            "Attend Jeanne d’Arc Festival (May 31, 2025) for parades",
+            "Enjoy €10 meals at Place Drouet-d’Erlon brasseries",
+            "Must-visit: Cathédrale Notre-Dame de Reims, Palais du Tau"
+          ]
+        },
+        {
+          title: "Recreation & Sports",
+          description: "Find spots for sports and relaxation",
+          tips: [
+            "Book badminton courts at Gymnase Thiolettes via university",
+            "Parc de Champagne for informal cricket with expat groups",
+            "Relax at Parc de la Patte d’Oie with green spaces",
+            "Watch Stade de Reims matches—student tickets from €10"
           ]
         }
       ]
@@ -204,13 +274,33 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
       ],
       localInsights: [
         {
-          title: "European Location",
-          description: "Gateway to Europe with excellent connections",
+          title: "Transportation",
+          description: "Navigate Lille and beyond",
           tips: [
-            "Close to Belgium, Netherlands, UK",
-            "High-speed train connections",
-            "Vibrant student nightlife",
-            "Lower cost of living"
+            "Transpole metro, trams, and buses (€35/month student pass) via Transpole app",
+            "V’Lille bikes through the V’Lille app",
+            "FlixBus to Paris, Lyon, etc. (from €7) via FlixBus app from Gare Lille Europe",
+            "SNCF TGV to Paris in 1 hour via SNCF Connect app"
+          ]
+        },
+        {
+          title: "Culture & Events",
+          description: "Experience Lille’s youthful vibe",
+          tips: [
+            "Visit Braderie de Lille (first weekend of September) for flea markets and music",
+            "Enjoy €5-7 kebabs on Rue de Gand",
+            "Le Macumba bar in Wazemmes has €2 drink nights",
+            "Must-visit: Vieux-Lille, Palais des Beaux-Arts"
+          ]
+        },
+        {
+          title: "Recreation & Sports",
+          description: "Find spots for sports and relaxation",
+          tips: [
+            "Book badminton courts at Gymnase des Bois Blancs via Anybuddy",
+            "Parc de la Citadelle for informal cricket with expat groups",
+            "Relax at Parc de la Citadelle with trails and a zoo",
+            "Explore Lille Cathedral for a cultural outing"
           ]
         }
       ]
@@ -227,13 +317,33 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
       ],
       localInsights: [
         {
-          title: "European Capital",
-          description: "Home to European institutions",
+          title: "Transportation",
+          description: "Navigate Strasbourg and beyond",
           tips: [
-            "Internship opportunities at EU institutions",
-            "Bilingual French-German environment",
-            "Strong international student community",
-            "Beautiful historic city center"
+            "CTS trams and buses (€30/month student pass) via CTS app",
+            "Vélhop bikes through the Vélhop app",
+            "FlixBus to Paris, Lyon, etc. (from €18) via FlixBus app",
+            "SNCF TGV to Paris in 2 hours via SNCF Connect app"
+          ]
+        },
+        {
+          title: "Culture & Events",
+          description: "Experience Strasbourg’s French-German mix",
+          tips: [
+            "Visit Strasbourg Christmas Market (late November-December) for mulled wine",
+            "Enjoy tarte flambée at Au Brasseur for €8-10",
+            "La Kulture bar near the cathedral hosts student events",
+            "Must-visit: Cathédrale Notre-Dame, La Petite France"
+          ]
+        },
+        {
+          title: "Recreation & Sports",
+          description: "Find spots for sports and relaxation",
+          tips: [
+            "Book badminton courts at Gymnase des Deux Rives via Anybuddy",
+            "Parc de l’Orangerie for informal cricket with expat groups",
+            "Relax at Parc de l’Orangerie with a lake and storks",
+            "Visit European Parliament for a unique experience"
           ]
         }
       ]
@@ -251,13 +361,33 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
       ],
       localInsights: [
         {
-          title: "Wine Culture",
-          description: "World capital of wine",
+          title: "Transportation",
+          description: "Get around Bordeaux with ease",
           tips: [
-            "Learn about wine industry and culture",
-            "Visit vineyards and châteaux",
-            "Network in wine and luxury industries",
-            "Modern tram system for easy transport"
+            "TBM trams, buses, and boats (€30/month student pass) via TBM MyCiti app",
+            "VCub bikes through the VCub app",
+            "FlixBus to Toulouse, Paris, etc. (from €9) via FlixBus app",
+            "SNCF TGV to Paris in 2 hours via SNCF Connect app"
+          ]
+        },
+        {
+          title: "Wine Culture",
+          description: "Immerse in Bordeaux’s wine heritage",
+          tips: [
+            "Visit La Cité du Vin to learn about wine culture",
+            "Attend Fête du Vin (June, next in 2026) for tastings",
+            "Hang out at Darwin Ecosystem for cheap food trucks",
+            "Must-visit: Place de la Bourse, Grosse Cloche"
+          ]
+        },
+        {
+          title: "Recreation & Sports",
+          description: "Find spots for sports and relaxation",
+          tips: [
+            "Book badminton courts at Gymnase Thiers via Anybuddy",
+            "Parc Bordelais for informal cricket with expat groups",
+            "Relax at Jardin Public with green spaces",
+            "Explore €5 sandwiches on Rue Sainte-Catherine"
           ]
         }
       ]
@@ -275,13 +405,33 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
       ],
       localInsights: [
         {
+          title: "Transportation",
+          description: "Navigate Nice with ease",
+          tips: [
+            "Lignes d’Azur trams and buses (€25/month student pass) via Lignes d’Azur app",
+            "Vélo Bleu bikes through the Vélo Bleu app",
+            "FlixBus to Marseille, Paris, etc. (from €9) via FlixBus app",
+            "SNCF trains to Marseille in 2.5 hours via SNCF Connect app"
+          ]
+        },
+        {
           title: "Mediterranean Lifestyle",
           description: "Study with a view of the Mediterranean",
           tips: [
-            "Year-round pleasant weather",
-            "Beach lifestyle and outdoor activities",
-            "Higher cost of living",
-            "Tech hub in Sophia Antipolis"
+            "Enjoy Carnaval de Nice (February) with parades",
+            "Grab socca in Vieux Nice for €3-5",
+            "Relax on public beaches—bring your own towel",
+            "Must-visit: Promenade des Anglais, Castle Hill"
+          ]
+        },
+        {
+          title: "Recreation & Sports",
+          description: "Find spots for sports and relaxation",
+          tips: [
+            "Book badminton courts at Gymnase Pasteur via Anybuddy",
+            "Parc Estienne d’Orves for informal cricket with expat groups",
+            "Relax at Promenade du Paillon with fountains",
+            "Visit Vieux Nice for a cultural outing"
           ]
         }
       ]
@@ -298,13 +448,33 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
       ],
       localInsights: [
         {
-          title: "Cultural Diversity",
-          description: "Multicultural Mediterranean port city",
+          title: "Transportation",
+          description: "Navigate Marseille with ease",
           tips: [
-            "Diverse international community",
-            "Lower cost of living than Paris",
-            "Rich cultural and artistic scene",
-            "Good connections to North Africa and Middle East"
+            "RTM metro, trams, and buses (€30/month student pass) via RTM app",
+            "Ferries to Frioul islands (€5) via RTM",
+            "FlixBus to Nice, Paris, etc. (from €9) via FlixBus app from Saint Charles",
+            "SNCF trains to Paris in 3 hours via SNCF Connect app"
+          ]
+        },
+        {
+          title: "Cultural Diversity",
+          description: "Experience Marseille’s multicultural vibe",
+          tips: [
+            "Enjoy Fête de la Saint-Jean (June 23-24) with bonfires",
+            "Grab panisses in Le Panier for €3-5",
+            "Hang out at Cours Julien for cheap bars and live music",
+            "Must-visit: Vieux-Port, Notre-Dame de la Garde, Calanques"
+          ]
+        },
+        {
+          title: "Recreation & Sports",
+          description: "Find spots for sports and relaxation",
+          tips: [
+            "Book badminton courts at Palais Omnisports Marseille Grand-Est via Anybuddy",
+            "Parc Borély for informal cricket with expat groups",
+            "Relax at Parc Borély with fields and trails",
+            "Explore the diverse food scene with North African flavors"
           ]
         }
       ]
