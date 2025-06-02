@@ -145,7 +145,7 @@ export const ModuleContent = ({ module, onBack, onComplete, isCompleted }: Modul
                   onClick={handleModuleComplete}
                   className="bg-green-600 hover:bg-green-700"
                 >
-                  Complete Module & Earn Key 🗝️
+                 Module Completed & Earn Key 🗝️
                 </Button>
               </div>
             </CardContent>
