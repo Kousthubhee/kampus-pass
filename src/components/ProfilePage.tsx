@@ -1,9 +1,11 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { User, Settings, Award, Calendar, BookOpen, Target } from 'lucide-react';
+import { useState } from 'react';
 
 export const ProfilePage = () => {
+  const [isVFSPopupOpen, setIsVFSPopupOpen] = useState(false);
+
   const userStats = [
     { label: 'Modules Completed', value: '3/7', icon: Target },
     { label: 'Keys Earned', value: '3', icon: Award },
@@ -23,6 +25,55 @@ export const ProfilePage = () => {
     { action: 'Earned a key 🗝️', time: '2 hours ago', type: 'achievement' },
     { action: 'Started Pre-Arrival Checklist (Part 1)', time: '1 day ago', type: 'start' },
     { action: 'Joined Community Hub', time: '3 days ago', type: 'join' }
+  ];
+
+  const modules = [
+    {
+      category: 'Pre-Arrival',
+      items: [
+        {
+          name: 'VFS Visa Application',
+          progress: 50,
+          details: {
+            documents: [
+              'Valid passport (valid for at least 3 months after return)',
+              'Campus France authorization letter',
+              'Two recent passport-sized photos',
+              'Acceptance letter from French institution',
+              'Proof of financial resources (€615/month or bank statement)',
+              'Proof of accommodation in France',
+              'Health insurance coverage',
+              'Academic transcripts and certificates',
+              'Visa application form (completed)',
+              'Proof of payment for Campus France fee'
+            ],
+            process: [
+              'Complete Campus France procedure online',
+              'Schedule VFS Global appointment',
+              'Submit documents at VFS center',
+              'Attend biometric data collection',
+              'Track application status online',
+              'Collect visa from VFS center'
+            ],
+            fees: [
+              'Campus France fee: €50-€100 (varies by country)',
+              'VFS service fee: €40 (approx.)',
+              'Visa fee: €80 for long-stay student visa'
+            ]
+          }
+        },
+        { name: 'Campus France Procedure', progress: 30 },
+        { name: 'Travel Arrangements', progress: 10 }
+      ]
+    },
+    {
+      category: 'Post-Arrival',
+      items: [
+        { name: 'OFII Registration', progress: 0 },
+        { name: 'Bank Account Setup', progress: 0 },
+        { name: 'Housing Registration', progress: 0 }
+      ]
+    }
   ];
 
   return (
@@ -99,35 +150,34 @@ export const ProfilePage = () => {
 
           <Card>
             <CardContent className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Learning Progress</h3>
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <span className="text-gray-700">Overall Progress</span>
-                    <span className="text-gray-600">43%</span>
+              <h3 className="text-lg font-semibold mb-4">Learning Modules</h3>
+              <div className="space-y-6">
+                {modules.map((category, index) => (
+                  <div key={index}>
+                    <h4 className="text-md font-medium text-gray-800 mb-3">{category.category}</h4>
+                    <div className="space-y-4">
+                      {category.items.map((item, itemIndex) => (
+                        <div key={itemIndex}>
+                          <div className="flex justify-between mb-2">
+                            <span 
+                              className={`text-gray-700 ${item.name === 'VFS Visa Application' ? 'cursor-pointer text-blue-600 hover:underline' : ''}`}
+                              onClick={item.name === 'VFS Visa Application' ? () => setIsVFSPopupOpen(true) : null}
+                            >
+                              {item.name}
+                            </span>
+                            <span className="text-gray-600">{item.progress}%</span>
+                          </div>
+                          <div className="bg-gray-200 rounded-full h-2">
+                            <div 
+                              className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full" 
+                              style={{ width: `${item.progress}%` }} 
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="bg-gray-200 rounded-full h-2">
-                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full" style={{ width: '43%' }} />
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <span className="text-gray-700">French Language</span>
-                    <span className="text-gray-600">20%</span>
-                  </div>
-                  <div className="bg-gray-200 rounded-full h-2">
-                    <div className="bg-gradient-to-r from-green-500 to-emerald-600 h-2 rounded-full" style={{ width: '20%' }} />
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <span className="text-gray-700">Bureaucracy Knowledge</span>
-                    <span className="text-gray-600">60%</span>
-                  </div>
-                  <div className="bg-gray-200 rounded-full h-2">
-                    <div className="bg-gradient-to-r from-orange-500 to-red-600 h-2 rounded-full" style={{ width: '60%' }} />
-                  </div>
-                </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -202,6 +252,43 @@ export const ProfilePage = () => {
           </Card>
         </div>
       </div>
+
+      {isVFSPopupOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">VFS Visa Application</h3>
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-md font-medium text-gray-800">Required Documents</h4>
+                <ul className="list-disc pl-5 text-gray-600">
+                  {modules[0].items[0].details.documents.map((doc, index) => (
+                    <li key={index}>{doc}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-md font-medium text-gray-800">Application Process</h4>
+                <ol className="list-decimal pl-5 text-gray-600">
+                  {modules[0].items[0].details.process.map((step, index) => (
+                    <li key={index}>{step}</li>
+                  ))}
+                </ol>
+              </div>
+              <div>
+                <h4 className="text-md font-medium text-gray-800">Fees</h4>
+                <ul className="list-disc pl-5 text-gray-600">
+                  {modules[0].items[0].details.fees.map((fee, index) => (
+                    <li key={index}>{fee}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <div className="mt-6 flex justify-end">
+              <Button onClick={() => setIsVFSPopupOpen(false)}>Close</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
