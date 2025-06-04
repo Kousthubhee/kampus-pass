@@ -1,20 +1,63 @@
+
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Users, MessageSquare, Share2, Heart, Calendar, Video, Edit, Search, Award, Pin } from 'lucide-react';
+import { Users, MessageSquare, Share2, Heart, Calendar, Video, Edit, Award } from 'lucide-react';
+
+interface Post {
+  id: number;
+  type: 'post' | 'reel' | 'poll';
+  author: string;
+  avatar: string;
+  time: string;
+  content?: string;
+  videoUrl?: string;
+  caption?: string;
+  question?: string;
+  options?: { text: string; votes: number; }[];
+  likes: number;
+  comments: Comment[];
+  category: string;
+}
+
+interface Blog {
+  id: number;
+  author: string;
+  avatar?: string;
+  title: string;
+  time: string;
+  content: string;
+  likes: number;
+  comments: Comment[];
+}
+
+interface Comment {
+  id: number;
+  author: string;
+  content: string;
+  likes: number;
+  replies: Reply[];
+}
+
+interface Reply {
+  id: number;
+  author: string;
+  content: string;
+  likes: number;
+}
 
 export const HubPage = () => {
-  const [activeTab, setActiveTab] = useState('qa'); // Default to Q&A tab
+  const [activeTab, setActiveTab] = useState('qa');
   const [newPost, setNewPost] = useState('');
-  const [newReel, setNewReel] = useState(null);
+  const [newReel, setNewReel] = useState<string | null>(null);
   const [newReelCaption, setNewReelCaption] = useState('');
   const [blogTitle, setBlogTitle] = useState('');
   const [blogContent, setBlogContent] = useState('');
   const [pollQuestion, setPollQuestion] = useState('');
   const [pollOptions, setPollOptions] = useState(['', '']);
-  const [posts, setPosts] = useState([
+  const [posts, setPosts] = useState<Post[]>([
     {
       id: 1,
       type: 'post',
@@ -51,18 +94,19 @@ export const HubPage = () => {
       category: 'Poll'
     }
   ]);
-  const [blogs, setBlogs] = useState([
+  const [blogs, setBlogs] = useState<Blog[]>([
     {
       id: 1,
       author: 'Alex K.',
+      avatar: '👨‍💼',
       title: 'My First Month in France: A Journey',
       time: '5 hours ago',
-      content: 'Sharing my experience with the CAF application...',
+      content: 'Sharing my experience with the CAF application process and how I navigated the French bureaucracy...',
       likes: 28,
       comments: []
     }
   ]);
-  const [newComment, setNewComment] = useState({});
+  const [newComment, setNewComment] = useState<{ [key: string]: string }>({});
 
   const upcomingEvents = [
     { id: 1, title: 'Virtual Networking Event', date: 'Dec 15, 2024', time: '7:00 PM CET', attendees: 45 },
@@ -70,23 +114,23 @@ export const HubPage = () => {
     { id: 3, title: 'Live Q&A: Visa Tips', date: 'Dec 20, 2024', time: '5:00 PM CET', attendees: 30 }
   ];
 
-  const handleLike = (itemId, type) => {
-    if (type === 'post' || type === 'reel' || type === 'poll') {
-      setPosts(posts.map(item =>
-        item.id === itemId && item.type === type ? { ...item, likes: item.likes + 1 } : item
-      ));
-    } else if (type === 'blog') {
+  const handleLike = (itemId: number, type: string) => {
+    if (type === 'blog') {
       setBlogs(blogs.map(blog =>
         blog.id === itemId ? { ...blog, likes: blog.likes + 1 } : blog
+      ));
+    } else {
+      setPosts(posts.map(item =>
+        item.id === itemId ? { ...item, likes: item.likes + 1 } : item
       ));
     }
   };
 
-  const handleComment = (itemId, type) => {
+  const handleComment = (itemId: number, type: string) => {
     const commentText = newComment[`${type}-${itemId}`] || '';
     if (!commentText) return;
 
-    const newCommentObj = {
+    const newCommentObj: Comment = {
       id: Date.now(),
       author: 'You',
       content: commentText,
@@ -94,56 +138,22 @@ export const HubPage = () => {
       replies: []
     };
 
-    if (type === 'post' || type === 'reel' || type === 'poll') {
-      setPosts(posts.map(item =>
-        item.id === itemId && item.type === type ? { ...item, comments: [...item.comments, newCommentObj] } : item
-      ));
-    } else if (type === 'blog') {
+    if (type === 'blog') {
       setBlogs(blogs.map(blog =>
         blog.id === itemId ? { ...blog, comments: [...blog.comments, newCommentObj] } : blog
+      ));
+    } else {
+      setPosts(posts.map(item =>
+        item.id === itemId ? { ...item, comments: [...item.comments, newCommentObj] } : item
       ));
     }
 
     setNewComment({ ...newComment, [`${type}-${itemId}`]: '' });
   };
 
-  const handleReply = (itemId, commentId, type) => {
-    const replyText = newComment[`reply-${type}-${itemId}-${commentId}`] || '';
-    if (!replyText) return;
-
-    const newReply = {
-      id: Date.now(),
-      author: 'You',
-      content: replyText,
-      likes: 0
-    };
-
-    if (type === 'post' || type === 'reel' || type === 'poll') {
-      setPosts(posts.map(post =>
-        post.id === itemId && post.type === type ? {
-          ...post,
-          comments: post.comments.map(comment =>
-            comment.id === commentId ? { ...comment, replies: [...comment.replies, newReply] } : comment
-          )
-        } : post
-      ));
-    } else if (type === 'blog') {
-      setBlogs(blogs.map(blog =>
-        blog.id === itemId ? {
-          ...blog,
-          comments: blog.comments.map(comment =>
-            comment.id === commentId ? { ...comment, replies: [...comment.replies, newReply] } : comment
-          )
-        } : blog
-      ));
-    }
-
-    setNewComment({ ...newComment, [`reply-${type}-${itemId}-${commentId}`]: '' });
-  };
-
   const handlePublishPost = () => {
     if (!newPost) return;
-    const newPostObj = {
+    const newPostObj: Post = {
       id: Date.now(),
       type: 'post',
       author: 'You',
@@ -159,14 +169,14 @@ export const HubPage = () => {
     setActiveTab('qa');
   };
 
-  const handleReelUpload = (e) => {
-    const file = e.target.files[0];
+  const handleReelUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) setNewReel(URL.createObjectURL(file));
   };
 
   const handlePublishReel = () => {
     if (!newReel || !newReelCaption) return;
-    const newReelObj = {
+    const newReelObj: Post = {
       id: Date.now(),
       type: 'reel',
       author: 'You',
@@ -186,9 +196,10 @@ export const HubPage = () => {
 
   const handlePublishBlog = () => {
     if (!blogTitle || !blogContent) return;
-    const newBlog = {
+    const newBlog: Blog = {
       id: Date.now(),
       author: 'You',
+      avatar: '🧑‍🎓',
       title: blogTitle,
       time: 'Just now',
       content: blogContent,
@@ -202,7 +213,7 @@ export const HubPage = () => {
   };
 
   const addPollOption = () => setPollOptions([...pollOptions, '']);
-  const updatePollOption = (index, value) => {
+  const updatePollOption = (index: number, value: string) => {
     const updatedOptions = [...pollOptions];
     updatedOptions[index] = value;
     setPollOptions(updatedOptions);
@@ -210,7 +221,7 @@ export const HubPage = () => {
 
   const handlePublishPoll = () => {
     if (!pollQuestion || pollOptions.some(opt => !opt)) return;
-    const newPoll = {
+    const newPoll: Post = {
       id: Date.now(),
       type: 'poll',
       author: 'You',
@@ -228,9 +239,9 @@ export const HubPage = () => {
     setActiveTab('polls');
   };
 
-  const handleVotePoll = (pollId, optionIndex) => {
+  const handleVotePoll = (pollId: number, optionIndex: number) => {
     setPosts(posts.map(post =>
-      post.id === pollId && post.type === 'poll' ? {
+      post.id === pollId && post.type === 'poll' && post.options ? {
         ...post,
         options: post.options.map((opt, idx) =>
           idx === optionIndex ? { ...opt, votes: opt.votes + 1 } : opt
@@ -243,6 +254,84 @@ export const HubPage = () => {
   const reels = posts.filter(p => p.type === 'reel');
   const polls = posts.filter(p => p.type === 'poll');
 
+  const renderPostContent = (item: Post) => (
+    <Card key={item.id} className="hover:shadow-md transition-shadow">
+      <CardContent className="p-6">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center">
+            <div className="text-2xl mr-3">{item.avatar}</div>
+            <div>
+              <div className="font-semibold text-gray-900">{item.author}</div>
+              <div className="text-sm text-gray-500">{item.time}</div>
+            </div>
+          </div>
+          <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">{item.category}</span>
+        </div>
+        
+        {item.type === 'post' && <p className="text-gray-700 mb-4">{item.content}</p>}
+        {item.type === 'reel' && (
+          <>
+            <video src={item.videoUrl} controls className="w-full rounded-lg mb-4" />
+            <p className="text-gray-700 mt-2">{item.caption}</p>
+          </>
+        )}
+        {item.type === 'poll' && (
+          <>
+            <h4 className="text-lg font-semibold mb-4">{item.question}</h4>
+            <div className="space-y-2 mb-4">
+              {item.options?.map((option, idx) => (
+                <div key={idx} className="flex items-center justify-between bg-gray-50 p-3 rounded">
+                  <span>{option.text}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm text-gray-600">{option.votes} votes</span>
+                    <Button size="sm" variant="outline" onClick={() => handleVotePoll(item.id, idx)}>
+                      Vote
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+        
+        <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
+          <button
+            className="flex items-center hover:text-red-500 transition-colors"
+            onClick={() => handleLike(item.id, item.type)}
+          >
+            <Heart className="h-4 w-4 mr-1" />
+            {item.likes}
+          </button>
+          <span className="flex items-center">
+            <MessageSquare className="h-4 w-4 mr-1" />
+            {item.comments.length}
+          </span>
+        </div>
+
+        <div className="mt-4">
+          <Textarea
+            placeholder="Write a comment..."
+            className="mb-2 h-16"
+            value={newComment[`${item.type}-${item.id}`] || ''}
+            onChange={(e) =>
+              setNewComment({
+                ...newComment,
+                [`${item.type}-${item.id}`]: e.target.value
+              })
+            }
+          />
+          <Button
+            size="sm"
+            onClick={() => handleComment(item.id, item.type)}
+            disabled={!newComment[`${item.type}-${item.id}`]}
+          >
+            Comment
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   return (
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-8">
@@ -254,36 +343,29 @@ export const HubPage = () => {
           Connect with fellow students, share experiences, and get support
         </p>
         <div className="mt-4 flex justify-center space-x-4">
-          <button
-            className={`px-4 py-2 rounded ${activeTab === 'qa' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`}
-            onClick={() => setActiveTab('qa')}
-          >
-            Q&A
-          </button>
-          <button
-            className={`px-4 py-2 rounded ${activeTab === 'blogs' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`}
-            onClick={() => setActiveTab('blogs')}
-          >
-            Blogs
-          </button>
-          <button
-            className={`px-4 py-2 rounded ${activeTab === 'reels' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`}
-            onClick={() => setActiveTab('reels')}
-          >
-            Reels
-          </button>
-          <button
-            className={`px-4 py-2 rounded ${activeTab === 'polls' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}`}
-            onClick={() => setActiveTab('polls')}
-          >
-            Polls
-          </button>
+          {[
+            { id: 'qa', label: 'Q&A' },
+            { id: 'blogs', label: 'Blogs' },
+            { id: 'reels', label: 'Reels' },
+            { id: 'polls', label: 'Polls' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              className={`px-4 py-2 rounded transition-colors ${
+                activeTab === tab.id 
+                  ? 'bg-purple-600 text-white' 
+                  : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+              }`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          {/* Q&A Section */}
           {activeTab === 'qa' && (
             <>
               <Card>
@@ -301,114 +383,10 @@ export const HubPage = () => {
                   </Button>
                 </CardContent>
               </Card>
-              {qaPosts.map((item) => (
-                <Card key={item.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center">
-                        <div className="text-2xl mr-3">{item.avatar}</div>
-                        <div>
-                          <div className="font-semibold text-gray-900">{item.author}</div>
-                          <div className="text-sm text-gray-500">{item.time}</div>
-                        </div>
-                      </div>
-                      <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">{item.category}</span>
-                    </div>
-                    <p className="text-gray-700 mb-4">{item.content}</p>
-                    <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
-                      <button
-                        className="flex items-center hover:text-red-500"
-                        onClick={() => handleLike(item.id, item.type)}
-                      >
-                        <Heart className="h-4 w-4 mr-1" />
-                        {item.likes}
-                      </button>
-                      <span className="flex items-center">
-                        <MessageSquare className="h-4 w-4 mr-1" />
-                        {item.comments.length}
-                      </span>
-                    </div>
-
-                    {/* Comment Section */}
-                    <div className="mt-4">
-                      <Textarea
-                        placeholder="Write a comment..."
-                        className="mb-2 h-16"
-                        value={newComment[`${item.type}-${item.id}`] || ''}
-                        onChange={(e) =>
-                          setNewComment({
-                            ...newComment,
-                            [`${item.type}-${item.id}`]: e.target.value
-                          })
-                        }
-                      />
-                      <Button
-                        size="sm"
-                        onClick={() => handleComment(item.id, item.type)}
-                        disabled={!newComment[`${item.type}-${item.id}`]}
-                      >
-                        Comment
-                      </Button>
-                    </div>
-
-                    {/* Display Comments */}
-                    {item.comments.length > 0 && (
-                      <div className="mt-4 space-y-4">
-                        {item.comments.map((comment) => (
-                          <div key={comment.id} className="border-l-2 border-gray-200 pl-4">
-                            <div className="flex items-center mb-2">
-                              <span className="font-semibold text-gray-900 mr-2">{comment.author}</span>
-                              <span className="text-sm text-gray-500">{comment.time || 'Just now'}</span>
-                            </div>
-                            <p className="text-gray-700 mb-2">{comment.content}</p>
-
-                            {/* Reply Input */}
-                            <div className="mt-2">
-                              <Input
-                                placeholder="Write a reply..."
-                                className="mb-2"
-                                value={newComment[`reply-${item.type}-${item.id}-${comment.id}`] || ''}
-                                onChange={(e) =>
-                                  setNewComment({
-                                    ...newComment,
-                                    [`reply-${item.type}-${item.id}-${comment.id}`]: e.target.value
-                                  })
-                                }
-                              />
-                              <Button
-                                size="sm"
-                                onClick={() => handleReply(item.id, comment.id, item.type)}
-                                disabled={!newComment[`reply-${item.type}-${item.id}-${comment.id}`]}
-                              >
-                                Reply
-                              </Button>
-                            </div>
-
-                            {/* Display Replies */}
-                            {comment.replies && comment.replies.length > 0 && (
-                              <div className="mt-2 space-y-2 pl-4">
-                                {comment.replies.map((reply) => (
-                                  <div key={reply.id} className="border-l-2 border-gray-300 pl-4">
-                                    <div className="flex items-center mb-1">
-                                      <span className="font-semibold text-gray-900 mr-2">{reply.author}</span>
-                                      <span className="text-sm text-gray-500">{reply.time || 'Just now'}</span>
-                                    </div>
-                                    <p className="text-gray-700">{reply.content}</p>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
+              {qaPosts.map(renderPostContent)}
             </>
           )}
 
-          {/* Blogs Section */}
           {activeTab === 'blogs' && (
             <>
               <Card>
@@ -447,11 +425,11 @@ export const HubPage = () => {
                         </div>
                       </div>
                     </div>
-                    <h4 className="text-lg font-semibold">{item.title}</h4>
-                    <p className="text-gray-700 whitespace-pre-wrap">{item.content}</p>
+                    <h4 className="text-xl font-semibold mb-3 text-blue-900">{item.title}</h4>
+                    <p className="text-gray-700 whitespace-pre-wrap mb-4">{item.content}</p>
                     <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                       <button
-                        className="flex items-center hover:text-red-500"
+                        className="flex items-center hover:text-red-500 transition-colors"
                         onClick={() => handleLike(item.id, 'blog')}
                       >
                         <Heart className="h-4 w-4 mr-1" />
@@ -462,8 +440,6 @@ export const HubPage = () => {
                         {item.comments.length}
                       </span>
                     </div>
-
-                    {/* Comment Section */}
                     <div className="mt-4">
                       <Textarea
                         placeholder="Write a comment..."
@@ -484,65 +460,12 @@ export const HubPage = () => {
                         Comment
                       </Button>
                     </div>
-
-                    {/* Display Comments */}
-                    {item.comments.length > 0 && (
-                      <div className="mt-4 space-y-4">
-                        {item.comments.map((comment) => (
-                          <div key={comment.id} className="border-l-2 border-gray-200 pl-4">
-                            <div className="flex items-center mb-2">
-                              <span className="font-semibold text-gray-900 mr-2">{comment.author}</span>
-                              <span className="text-sm text-gray-500">{comment.time || 'Just now'}</span>
-                            </div>
-                            <p className="text-gray-700 mb-2">{comment.content}</p>
-
-                            {/* Reply Input */}
-                            <div className="mt-2">
-                              <Input
-                                placeholder="Write a reply..."
-                                className="mb-2"
-                                value={newComment[`reply-blog-${item.id}-${comment.id}`] || ''}
-                                onChange={(e) =>
-                                  setNewComment({
-                                    ...newComment,
-                                    [`reply-blog-${item.id}-${comment.id}`]: e.target.value
-                                  })
-                                }
-                              />
-                              <Button
-                                size="sm"
-                                onClick={() => handleReply(item.id, comment.id, 'blog')}
-                                disabled={!newComment[`reply-blog-${item.id}-${comment.id}`]}
-                              >
-                                Reply
-                              </Button>
-                            </div>
-
-                            {/* Display Replies */}
-                            {comment.replies && comment.replies.length > 0 && (
-                              <div className="mt-2 space-y-2 pl-4">
-                                {comment.replies.map((reply) => (
-                                  <div key={reply.id} className="border-l-2 border-gray-300 pl-4">
-                                    <div className="flex items-center mb-1">
-                                      <span className="font-semibold text-gray-900 mr-2">{reply.author}</span>
-                                      <span className="text-sm text-gray-500">{reply.time || 'Just now'}</span>
-                                    </div>
-                                    <p className="text-gray-700">{reply.content}</p>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
               ))}
             </>
           )}
 
-          {/* Reels Section */}
           {activeTab === 'reels' && (
             <>
               <Card>
@@ -565,115 +488,10 @@ export const HubPage = () => {
                   </Button>
                 </CardContent>
               </Card>
-              {reels.map((item) => (
-                <Card key={item.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center">
-                        <div className="text-2xl mr-3">{item.avatar}</div>
-                        <div>
-                          <div className="font-semibold text-gray-900">{item.author}</div>
-                          <div className="text-sm text-gray-500">{item.time}</div>
-                        </div>
-                      </div>
-                      <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">{item.category}</span>
-                    </div>
-                    <video src={item.videoUrl} controls className="w-full rounded-lg mb-4" />
-                    <p className="text-gray-700 mt-2">{item.caption}</p>
-                    <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
-                      <button
-                        className="flex items-center hover:text-red-500"
-                        onClick={() => handleLike(item.id, item.type)}
-                      >
-                        <Heart className="h-4 w-4 mr-1" />
-                        {item.likes}
-                      </button>
-                      <span className="flex items-center">
-                        <MessageSquare className="h-4 w-4 mr-1" />
-                        {item.comments.length}
-                      </span>
-                    </div>
-
-                    {/* Comment Section */}
-                    <div className="mt-4">
-                      <Textarea
-                        placeholder="Write a comment..."
-                        className="mb-2 h-16"
-                        value={newComment[`${item.type}-${item.id}`] || ''}
-                        onChange={(e) =>
-                          setNewComment({
-                            ...newComment,
-                            [`${item.type}-${item.id}`]: e.target.value
-                          })
-                        }
-                      />
-                      <Button
-                        size="sm"
-                        onClick={() => handleComment(item.id, item.type)}
-                        disabled={!newComment[`${item.type}-${item.id}`]}
-                      >
-                        Comment
-                      </Button>
-                    </div>
-
-                    {/* Display Comments */}
-                    {item.comments.length > 0 && (
-                      <div className="mt-4 space-y-4">
-                        {item.comments.map((comment) => (
-                          <div key={comment.id} className="border-l-2 border-gray-200 pl-4">
-                            <div className="flex items-center mb-2">
-                              <span className="font-semibold text-gray-900 mr-2">{comment.author}</span>
-                              <span className="text-sm text-gray-500">{comment.time || 'Just now'}</span>
-                            </div>
-                            <p className="text-gray-700 mb-2">{comment.content}</p>
-
-                            {/* Reply Input */}
-                            <div className="mt-2">
-                              <Input
-                                placeholder="Write a reply..."
-                                className="mb-2"
-                                value={newComment[`reply-${item.type}-${item.id}-${comment.id}`] || ''}
-                                onChange={(e) =>
-                                  setNewComment({
-                                    ...newComment,
-                                    [`reply-${item.type}-${item.id}-${comment.id}`]: e.target.value
-                                  })
-                                }
-                              />
-                              <Button
-                                size="sm"
-                                onClick={() => handleReply(item.id, comment.id, item.type)}
-                                disabled={!newComment[`reply-${item.type}-${item.id}-${comment.id}`]}
-                              >
-                                Reply
-                              </Button>
-                            </div>
-
-                            {/* Display Replies */}
-                            {comment.replies && comment.replies.length > 0 && (
-                              <div className="mt-2 space-y-2 pl-4">
-                                {comment.replies.map((reply) => (
-                                  <div key={reply.id} className="border-l-2 border-gray-300 pl-4">
-                                    <div className="flex items-center mb-1">
-                                      <span className="font-semibold text-gray-900 mr-2">{reply.author}</span>
-                                      <span className="text-sm text-gray-500">{reply.time || 'Just now'}</span>
-                                    </div>
-                                    <p className="text-gray-700">{reply.content}</p>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
+              {reels.map(renderPostContent)}
             </>
           )}
 
-          {/* Polls Section */}
           {activeTab === 'polls' && (
             <>
               <Card>
@@ -703,45 +521,7 @@ export const HubPage = () => {
                   </Button>
                 </CardContent>
               </Card>
-              {polls.map((item) => (
-                <Card key={item.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center">
-                        <div className="text-2xl mr-3">{item.avatar}</div>
-                        <div>
-                          <div className="font-semibold text-gray-900">{item.author}</div>
-                          <div className="text-sm text-gray-500">{item.time}</div>
-                        </div>
-                      </div>
-                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">{item.category}</span>
-                    </div>
-                    <h4 className="text-lg font-semibold">{item.question}</h4>
-                    <div className="space-y-2 mt-2">
-                      {item.options.map((option, idx) => (
-                        <div key={idx} className="flex items-center justify-between">
-                          <span>{option.text}</span>
-                          <div className="flex items-center space-x-2">
-                            <span>{option.votes} votes</span>
-                            <Button size="sm" onClick={() => handleVotePoll(item.id, idx)}>
-                              Vote
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="flex items-center space-x-4 text-sm text-gray-500 mt-4">
-                      <button
-                        className="flex items-center hover:text-red-500"
-                        onClick={() => handleLike(item.id, item.type)}
-                      >
-                        <Heart className="h-4 w-4 mr-1" />
-                        {item.likes}
-                      </button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+              {polls.map(renderPostContent)}
             </>
           )}
         </div>
@@ -755,11 +535,13 @@ export const HubPage = () => {
               </h3>
               <div className="space-y-4">
                 {upcomingEvents.map((event) => (
-                  <div key={event.id} className="bg-blue-50 p-4 rounded-lg">
+                  <div key={event.id} className="bg-blue-50 p-4 rounded-lg border border-blue-100">
                     <div className="font-semibold text-blue-900">{event.title}</div>
-                    <div className="text-sm text-blue-700">{event.date} at {event.time}</div>
+                    <div className="text-sm text-blue-700 mt-1">{event.date} at {event.time}</div>
                     <div className="text-xs text-blue-600 mt-1">{event.attendees} attending</div>
-                    <Button size="sm" className="mt-2 w-full">Join Event</Button>
+                    <Button size="sm" className="mt-3 w-full bg-blue-600 hover:bg-blue-700">
+                      Join Event
+                    </Button>
                   </div>
                 ))}
               </div>
@@ -770,28 +552,8 @@ export const HubPage = () => {
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold mb-4 flex items-center">
                 <Award className="h-5 w-5 mr-2 text-yellow-600" />
-                Achievements
+                Community Stats
               </h3>
-              <div className="space-y-3">
-                <div className="flex items-center">
-                  <span className="text-yellow-600 mr-2">🏆</span>
-                  <span>Top Contributor</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-yellow-600 mr-2">🌟</span>
-                  <span>Helpful Mentor</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-yellow-600 mr-2">🎉</span>
-                  <span>Community Star</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Community Stats</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Active Members</span>
@@ -799,7 +561,7 @@ export const HubPage = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Posts This Week</span>
-                  <span className="font-semibold">{posts.filter(p => p.time === 'Just now').length + 89}</span>
+                  <span className="font-semibold">{posts.length + 89}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Questions Answered</span>
@@ -811,19 +573,19 @@ export const HubPage = () => {
 
           <Card>
             <CardContent className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Quick Help</h3>
+              <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
               <div className="space-y-2">
-                <Button variant="outline" className="w-full justify-start">
-                  📋 Post a Question
+                <Button variant="outline" className="w-full justify-start" onClick={() => setActiveTab('qa')}>
+                  📋 Ask Question
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  🤝 Find Study Partner
+                <Button variant="outline" className="w-full justify-start" onClick={() => setActiveTab('blogs')}>
+                  📝 Write Blog
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  🏠 Housing Exchange
+                <Button variant="outline" className="w-full justify-start" onClick={() => setActiveTab('reels')}>
+                  🎥 Share Reel
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  📚 Share Resources
+                <Button variant="outline" className="w-full justify-start" onClick={() => setActiveTab('polls')}>
+                  📊 Create Poll
                 </Button>
               </div>
             </CardContent>

@@ -26,13 +26,12 @@ const Index = () => {
   const [currentPage, setCurrentPage] = useState('checklist');
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [userProgress, setUserProgress] = useState({
-    keys: 4, // Start with 4 keys
+    keys: 4,
     completedModules: [],
-    unlockedModules: ['school', 'pre-arrival-1', 'pre-arrival-2'], // Only first 3 modules unlocked
+    unlockedModules: ['school', 'pre-arrival-1', 'pre-arrival-2'],
     currentPage: 'checklist'
   });
 
-  // Update current page when user progress changes
   const handleProgressUpdate = (newProgress: any) => {
     setUserProgress(newProgress);
     if (newProgress.currentPage && newProgress.currentPage !== currentPage) {
@@ -48,7 +47,6 @@ const Index = () => {
       icon: '🏫',
       color: 'from-blue-500 to-cyan-500',
       type: 'school'
-      // No keysRequired - always available
     },
     {
       id: 'pre-arrival-1',
@@ -57,7 +55,6 @@ const Index = () => {
       icon: '✈️',
       color: 'from-green-500 to-emerald-500',
       type: 'checklist'
-      // No keysRequired - initially available
     },
     {
       id: 'pre-arrival-2',
@@ -66,7 +63,6 @@ const Index = () => {
       icon: '🎒',
       color: 'from-orange-500 to-red-500',
       type: 'checklist'
-      // No keysRequired - initially available
     },
     {
       id: 'post-arrival',
@@ -75,7 +71,7 @@ const Index = () => {
       icon: '🏠',
       color: 'from-indigo-500 to-purple-500',
       type: 'checklist',
-      keysRequired: 2 // Requires 2 keys to unlock
+      keysRequired: 2
     },
     {
       id: 'integration',
@@ -84,16 +80,16 @@ const Index = () => {
       icon: '🤝',
       color: 'from-rose-500 to-pink-500',
       type: 'integration',
-      keysRequired: 3 // Requires 3 keys to unlock
+      keysRequired: 3
     },
     {
       id: 'finance',
       title: 'Tracking your Finances',
-      description: 'Important paperwork and renewal processes',
-      icon: '📄',
+      description: 'Important paperwork and financial management',
+      icon: '💰',
       color: 'from-teal-500 to-blue-500',
       type: 'documents',
-      keysRequired: 1 // Requires 1 key to unlock
+      keysRequired: 1
     },
   ];
 
@@ -121,116 +117,92 @@ const Index = () => {
       );
     }
 
-    switch (currentPage) {
-      case 'checklist':
-        return (
-          <ChecklistModule 
-            modules={checklistModules}
-            userProgress={userProgress}
-            setUserProgress={handleProgressUpdate}
-            onSchoolSelect={setSelectedSchool}
-            currentPage={currentPage}
-          />
-        );
-      case 'school-insights':
-        return <SchoolInsightsPage onBack={() => setCurrentPage('checklist')} />;
-      case 'pre-arrival-1':
-        return (
-          <PreArrival1Page 
-            onBack={() => setCurrentPage('checklist')} 
-            onComplete={() => {
-              const newProgress = {
-                ...userProgress,
-                completedModules: [...userProgress.completedModules, 'pre-arrival-1'],
-                keys: userProgress.keys + 1
-              };
-              handleProgressUpdate(newProgress);
-              setCurrentPage('checklist');
-            }}
-            isCompleted={userProgress.completedModules.includes('pre-arrival-1')}
-          />
-        );
-      case 'pre-arrival-2':
-        return (
-          <PreArrival2Page 
-            onBack={() => setCurrentPage('checklist')} 
-            onComplete={() => {
-              const newProgress = {
-                ...userProgress,
-                completedModules: [...userProgress.completedModules, 'pre-arrival-2'],
-                keys: userProgress.keys + 1
-              };
-              handleProgressUpdate(newProgress);
-              setCurrentPage('checklist');
-            }}
-            isCompleted={userProgress.completedModules.includes('pre-arrival-2')}
-          />
-        );
-      case 'post-arrival':
-        return (
-          <PostArrivalPage 
-            onBack={() => setCurrentPage('checklist')} 
-            onComplete={() => {
-              const newProgress = {
-                ...userProgress,
-                completedModules: [...userProgress.completedModules, 'post-arrival'],
-                keys: userProgress.keys + 1
-              };
-              handleProgressUpdate(newProgress);
-              setCurrentPage('checklist');
-            }}
-            isCompleted={userProgress.completedModules.includes('post-arrival')}
-          />
-        );
-      case 'finance-tracking':
-        return (
-          <FinanceTrackingPage 
-            onBack={() => setCurrentPage('checklist')} 
-            onComplete={() => {
-              const newProgress = {
-                ...userProgress,
-                completedModules: [...userProgress.completedModules, 'finance'],
-                keys: userProgress.keys + 1
-              };
-              handleProgressUpdate(newProgress);
-              setCurrentPage('checklist');
-            }}
-            isCompleted={userProgress.completedModules.includes('finance')}
-          />
-        );
-      case 'qa':
-        return <QAPage />;
-      case 'hub':
-        return <HubPage />;
-      case 'news':
-        return <NewsPage />;
-      case 'affiliation':
-        return <AffiliationPage />;
-      case 'language':
-        return <LanguagePage />;
-      case 'translate':
-        return <TranslatePage />;
-      case 'contact':
-        return <ContactPage />;
-      case 'profile':
-        return <ProfilePage />;
-      case 'notifications':
-        return <NotificationPage />;
-      case 'integration':
-        return <FrenchIntegrationPage />;
-      case 'documents':
-        return <DocumentsPage />;
-      default:
-        return (
-          <ChecklistModule 
-            modules={checklistModules}
-            userProgress={userProgress}
-            setUserProgress={handleProgressUpdate}
-            onSchoolSelect={setSelectedSchool}
-            currentPage={currentPage}
-          />
-        );
-    }
+    const pageComponents = {
+      'checklist': () => (
+        <ChecklistModule 
+          modules={checklistModules}
+          userProgress={userProgress}
+          setUserProgress={handleProgressUpdate}
+          onSchoolSelect={setSelectedSchool}
+          currentPage={currentPage}
+        />
+      ),
+      'school-insights': () => <SchoolInsightsPage onBack={() => setCurrentPage('checklist')} />,
+      'pre-arrival-1': () => (
+        <PreArrival1Page 
+          onBack={() => setCurrentPage('checklist')} 
+          onComplete={() => {
+            const newProgress = {
+              ...userProgress,
+              completedModules: [...userProgress.completedModules, 'pre-arrival-1'],
+              keys: userProgress.keys + 1
+            };
+            handleProgressUpdate(newProgress);
+            setCurrentPage('checklist');
+          }}
+          isCompleted={userProgress.completedModules.includes('pre-arrival-1')}
+        />
+      ),
+      'pre-arrival-2': () => (
+        <PreArrival2Page 
+          onBack={() => setCurrentPage('checklist')} 
+          onComplete={() => {
+            const newProgress = {
+              ...userProgress,
+              completedModules: [...userProgress.completedModules, 'pre-arrival-2'],
+              keys: userProgress.keys + 1
+            };
+            handleProgressUpdate(newProgress);
+            setCurrentPage('checklist');
+          }}
+          isCompleted={userProgress.completedModules.includes('pre-arrival-2')}
+        />
+      ),
+      'post-arrival': () => (
+        <PostArrivalPage 
+          onBack={() => setCurrentPage('checklist')} 
+          onComplete={() => {
+            const newProgress = {
+              ...userProgress,
+              completedModules: [...userProgress.completedModules, 'post-arrival'],
+              keys: userProgress.keys + 1
+            };
+            handleProgressUpdate(newProgress);
+            setCurrentPage('checklist');
+          }}
+          isCompleted={userProgress.completedModules.includes('post-arrival')}
+        />
+      ),
+      'finance-tracking': () => (
+        <FinanceTrackingPage 
+          onBack={() => setCurrentPage('checklist')} 
+          onComplete={() => {
+            const newProgress = {
+              ...userProgress,
+              completedModules: [...userProgress.completedModules, 'finance'],
+              keys: userProgress.keys + 1
+            };
+            handleProgressUpdate(newProgress);
+            setCurrentPage('checklist');
+          }}
+          isCompleted={userProgress.completedModules.includes('finance')}
+        />
+      ),
+      'qa': () => <QAPage />,
+      'hub': () => <HubPage />,
+      'news': () => <NewsPage />,
+      'affiliation': () => <AffiliationPage />,
+      'language': () => <LanguagePage />,
+      'translate': () => <TranslatePage />,
+      'contact': () => <ContactPage />,
+      'profile': () => <ProfilePage />,
+      'notifications': () => <NotificationPage />,
+      'integration': () => <FrenchIntegrationPage />,
+      'documents': () => <DocumentsPage />,
+    };
+
+    const PageComponent = pageComponents[currentPage as keyof typeof pageComponents];
+    return PageComponent ? PageComponent() : pageComponents['checklist']();
   };
 
   return (
@@ -248,7 +220,7 @@ const Index = () => {
           </main>
           <footer className="bg-white border-t border-gray-200 py-4 px-6">
             <div className="text-center text-gray-600">
-             🎓 © {new Date().getFullYear()} <span className="text-blue-600 font-semibold">  Kousthubhee Krishna K</span> & <span className="text-cyan-600 font-semibold">Srivatsava CK</span>
+             🎓 © {new Date().getFullYear()} <span className="text-blue-600 font-semibold">Kousthubhee Krishna K</span> & <span className="text-cyan-600 font-semibold">Srivatsava CK</span>
             </div>
           </footer>
         </div>
