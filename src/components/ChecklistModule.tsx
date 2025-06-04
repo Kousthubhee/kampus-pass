@@ -13,6 +13,7 @@ interface Module {
   icon: string;
   color: string;
   type: string;
+  keysRequired?: number;
 }
 
 interface ChecklistModuleProps {
@@ -41,19 +42,36 @@ export const ChecklistModule = ({
     }
   }, [currentPage]);
 
-  // Unlock all modules once on load
+  // Initialize with some modules unlocked and others requiring keys
   useEffect(() => {
-    if (!userProgress.unlockedModules || userProgress.unlockedModules.length !== modules.length) {
+    if (!userProgress.unlockedModules) {
       setUserProgress({
         ...userProgress,
-        unlockedModules: modules.map(m => m.id)
+        unlockedModules: ['school', 'pre-arrival-1', 'pre-arrival-2'] // Only first 3 modules unlocked
       });
     }
   }, [modules, userProgress, setUserProgress]);
 
   const handleModuleClick = (module: Module) => {
     const isUnlocked = userProgress.unlockedModules.includes(module.id);
-    if (!isUnlocked) return;
+    
+    // If module is locked and requires keys, check if user has enough keys
+    if (!isUnlocked && module.keysRequired) {
+      if (userProgress.keys < module.keysRequired) {
+        console.log('Not enough keys to unlock module:', module.id);
+        return;
+      }
+      
+      // Unlock the module by spending keys
+      const newProgress = {
+        ...userProgress,
+        keys: userProgress.keys - module.keysRequired,
+        unlockedModules: [...userProgress.unlockedModules, module.id]
+      };
+      setUserProgress(newProgress);
+    }
+    
+    if (!isUnlocked && !module.keysRequired) return;
     
     console.log('Module clicked:', module.id);
     
@@ -82,7 +100,7 @@ export const ChecklistModule = ({
     const newProgress = {
       ...userProgress,
       completedModules: [...userProgress.completedModules, moduleId],
-      keys: userProgress.keys + 1,
+      keys: userProgress.keys + 1, // Earn 1 key per completed module
     };
 
     setUserProgress(newProgress);
@@ -124,6 +142,7 @@ export const ChecklistModule = ({
               isCompleted={isCompleted}
               isUnlocked={isUnlocked}
               onModuleClick={handleModuleClick}
+              userKeys={userProgress.keys}
             />
           );
         })}

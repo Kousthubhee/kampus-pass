@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
@@ -26,9 +25,9 @@ const Index = () => {
   const [currentPage, setCurrentPage] = useState('checklist');
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [userProgress, setUserProgress] = useState({
-    keys: 3,
+    keys: 0, // Start with 0 keys
     completedModules: [],
-    unlockedModules: ['school'],
+    unlockedModules: ['school', 'pre-arrival-1', 'pre-arrival-2'], // Only first 3 modules unlocked
     currentPage: 'checklist'
   });
 
@@ -47,8 +46,8 @@ const Index = () => {
       description: 'Explore French schools and get local insights for each city',
       icon: '🏫',
       color: 'from-blue-500 to-cyan-500',
-      unlocked: true,
       type: 'school'
+      // No keysRequired - always available
     },
     {
       id: 'pre-arrival-1',
@@ -56,8 +55,8 @@ const Index = () => {
       description: 'Campus France, VFS, and essential preparations',
       icon: '✈️',
       color: 'from-green-500 to-emerald-500',
-      unlocked: userProgress.unlockedModules.includes('pre-arrival-1'),
       type: 'checklist'
+      // No keysRequired - initially available
     },
     {
       id: 'pre-arrival-2',
@@ -65,8 +64,8 @@ const Index = () => {
       description: 'Food, clothes, and cultural preparation',
       icon: '🎒',
       color: 'from-orange-500 to-red-500',
-      unlocked: userProgress.unlockedModules.includes('pre-arrival-2'),
       type: 'checklist'
+      // No keysRequired - initially available
     },
     {
       id: 'post-arrival',
@@ -74,8 +73,8 @@ const Index = () => {
       description: 'Bank account, SSN, insurance, CAF, and more',
       icon: '🏠',
       color: 'from-indigo-500 to-purple-500',
-      unlocked: userProgress.unlockedModules.includes('post-arrival'),
-      type: 'checklist'
+      type: 'checklist',
+      keysRequired: 2 // Requires 2 keys to unlock
     },
     {
       id: 'integration',
@@ -83,8 +82,8 @@ const Index = () => {
       description: 'Cultural adaptation and social integration',
       icon: '🤝',
       color: 'from-rose-500 to-pink-500',
-      unlocked: userProgress.unlockedModules.includes('integration'),
-      type: 'integration'
+      type: 'integration',
+      keysRequired: 3 // Requires 3 keys to unlock
     },
     {
       id: 'finance',
@@ -92,10 +91,9 @@ const Index = () => {
       description: 'Important paperwork and renewal processes',
       icon: '📄',
       color: 'from-teal-500 to-blue-500',
-      unlocked: userProgress.unlockedModules.includes('documents'),
-      type: 'documents'
+      type: 'documents',
+      keysRequired: 1 // Requires 1 key to unlock
     },
-    
   ];
 
   const renderCurrentPage = () => {
