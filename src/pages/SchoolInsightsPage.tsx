@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ArrowLeft, MapPin, Building2, Users, Info } from 'lucide-react';
+import { ArrowLeft, MapPin, Users, BookOpen, Star, Info, Building2 } from 'lucide-react';
 
 interface School {
   id: string;
@@ -28,12 +28,11 @@ interface City {
   localInsights: LocalInsight[];
 }
 
-interface SchoolSelectorProps {
+interface SchoolInsightsPageProps {
   onBack: () => void;
-  onSchoolSelect: (school: School) => void;
 }
 
-export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) => {
+export const SchoolInsightsPage = ({ onBack }: SchoolInsightsPageProps) => {
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
   const [showInsights, setShowInsights] = useState(false);
@@ -44,12 +43,12 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
       description: 'Capital city with top-tier schools in all domains',
       emoji: '🇫🇷',
       schools: [
-        { id: 'sorbonne', name: 'Sorbonne University', description: 'Humanities, sciences, and medicine', location: 'Paris', programs: ['Humanities', 'Science', 'Medicine'] },
+        { id: 'sorbonne', name: 'Sorbonne University', description: 'One of France’s most prestigious universities with a rich history dating back to 1257.', location: 'Paris', programs: ['Humanities', 'Science', 'Medicine'] },
         { id: 'psl', name: 'PSL University', description: 'Includes ENS, Dauphine, Mines ParisTech', location: 'Paris', programs: ['Science', 'Economics', 'Engineering'] },
         { id: 'polytechnique', name: 'École Polytechnique', description: 'Elite engineering grande école', location: 'Palaiseau (Paris area)', programs: ['Engineering', 'Science', 'Economics'] },
         { id: 'hec-paris', name: 'HEC Paris', description: 'Top global business school', location: 'Jouy-en-Josas', programs: ['MBA', 'Grande École'] },
         { id: 'escp', name: 'ESCP Business School', description: 'Multi-campus, Paris is the flagship', location: 'Paris', programs: ['MIM', 'MBA'] },
-        { id: 'sciencespo-paris', name: 'Sciences Po Paris', description: 'Political science, international affairs', location: 'Paris', programs: ['Politics', 'International Affairs'] },
+        { id: 'sciencespo-paris', name: 'Sciences Po Paris', description: 'Premier institution for political and social sciences education.', location: 'Paris', programs: ['Politics', 'International Affairs'] },
         { id: 'neoma-paris', name: 'NEOMA Business School (Paris)', description: 'Executive & MSc programs', location: 'Paris', programs: ['MSc', 'Executive'] },
         { id: 'telecom-paris', name: 'Télécom Paris', description: 'Tech-focused grande école', location: 'Paris', programs: ['Engineering', 'Telecom'] },
         { id: 'essec', name: 'ESSEC Business School', description: 'Cergy campus in Paris region', location: 'Cergy', programs: ['MIM', 'MBA', 'MSc'] }
@@ -481,40 +480,41 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
     }
   };
 
+  // Detailed School View
   if (selectedSchool) {
     return (
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center mb-6">
-          <Button variant="ghost" onClick={() => setSelectedSchool(null)} className="mr-4">
+        <div className="mb-6">
+          <Button variant="outline" onClick={() => setSelectedSchool(null)} className="mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" /> Back to Schools
           </Button>
-        </div>
-
-        <div className="rounded-lg p-6 mb-6 text-white bg-gradient-to-r from-blue-600 to-purple-600">
-          <h1 className="text-3xl font-bold mb-1">{selectedSchool.name}</h1>
-          <p className="text-lg mb-1">{selectedSchool.description}</p>
-          <div className="flex items-center text-sm">
-            <MapPin className="h-4 w-4 mr-2" />
-            {selectedSchool.location}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">{selectedSchool.name}</h1>
+            <p className="text-lg text-gray-600">{selectedSchool.description}</p>
+            <div className="flex items-center justify-center text-gray-600 mt-1">
+              <MapPin className="h-4 w-4 mr-1" />
+              {selectedSchool.location}
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card>
-            <CardContent className="p-4">
-              <h2 className="font-semibold text-gray-800 text-md mb-2">🎓 Programs Offered</h2>
-              {selectedSchool.programs.map((prog) => (
-                <div key={prog} className="flex justify-between text-sm text-gray-700 border-b py-1">
-                  <span>{prog}</span>
-                  <span className="text-green-600 font-medium">Available</span>
-                </div>
-              ))}
+            <CardContent className="p-6">
+              <h2 className="font-semibold text-gray-800 text-lg mb-3">🎓 Programs Offered</h2>
+              <div className="flex flex-wrap gap-1">
+                {selectedSchool.programs.map((prog, idx) => (
+                  <span key={idx} className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                    {prog}
+                  </span>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-4">
-              <h2 className="font-semibold text-gray-800 text-md mb-2">📅 Tuition & Fees</h2>
+            <CardContent className="p-6">
+              <h2 className="font-semibold text-gray-800 text-lg mb-3">📅 Tuition & Fees</h2>
               <ul className="text-sm text-gray-700 list-disc ml-4 space-y-1">
                 <li>Application fee: €100–200</li>
                 <li>Living expenses: €800–1,200/month</li>
@@ -524,8 +524,8 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
           </Card>
 
           <Card>
-            <CardContent className="p-4">
-              <h2 className="font-semibold text-gray-800 text-md mb-2">🌐 Admission Requirements</h2>
+            <CardContent className="p-6">
+              <h2 className="font-semibold text-gray-800 text-lg mb-3">🌐 Admission Requirements</h2>
               <ul className="text-sm text-gray-700 list-disc ml-4 space-y-1">
                 <li>Bachelor's degree (any field)</li>
                 <li>GMAT/GRE scores</li>
@@ -538,8 +538,8 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
           </Card>
 
           <Card>
-            <CardContent className="p-4">
-              <h2 className="font-semibold text-gray-800 text-md mb-2">📞 Contact Information</h2>
+            <CardContent className="p-6">
+              <h2 className="font-semibold text-gray-800 text-lg mb-3">📞 Contact Information</h2>
               <div className="text-sm text-gray-700 space-y-1">
                 <p><span className="font-medium">📧</span> admissions@{selectedSchool.id}.edu</p>
                 <p><span className="font-medium">📱</span> +33 1 XX XX XX XX</p>
@@ -550,8 +550,8 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
         </div>
 
         <Card className="mt-6">
-          <CardContent className="p-4">
-            <h2 className="font-semibold text-gray-800 text-md mb-3">📌 Application Deadlines</h2>
+          <CardContent className="p-6">
+            <h2 className="font-semibold text-gray-800 text-lg mb-3">📌 Application Deadlines</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-blue-50 p-3 rounded-lg">
                 <h3 className="font-semibold text-sm text-blue-800">Fall Intake</h3>
@@ -575,33 +575,37 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
     );
   }
 
+  // City-Specific View with Schools and Local Insights
   if (selectedCity && cities[selectedCity]) {
     const cityData = cities[selectedCity];
     return (
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center mb-6">
-          <Button variant="ghost" onClick={() => setSelectedCity(null)} className="mr-4">
+        <div className="mb-6">
+          <Button variant="outline" onClick={() => setSelectedCity(null)} className="mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" /> Back to Cities
           </Button>
-          <h1 className="text-2xl font-bold text-gray-900">{cityData.name} - Schools & Local Insights</h1>
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">🏫 {cityData.name} - School & Local Insights</h1>
+            <p className="text-lg text-gray-600">{cityData.description}</p>
+          </div>
         </div>
 
         {/* Local Insights Section */}
-        <Card className="mb-6 bg-gradient-to-r from-purple-50 to-blue-50">
+        <Card className="mb-6">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
-                <Info className="h-5 w-5 text-purple-600 mr-2" />
+                <Info className="h-5 w-5 text-blue-600 mr-2" />
                 <h2 className="text-xl font-semibold text-gray-900">Local Insights for {cityData.name}</h2>
               </div>
-              <Button onClick={() => setShowInsights(true)} variant="outline" size="sm">
+              <Button onClick={() => setShowInsights(true)} variant="outline">
                 View All Tips
               </Button>
             </div>
             <p className="text-gray-600 mb-4">Get insider knowledge about living and studying in {cityData.name}</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {cityData.localInsights.slice(0, 3).map((insight, index) => (
-                <div key={index} className="bg-white p-4 rounded-lg border">
+              {cityData.localInsights.map((insight, index) => (
+                <div key={index} className="bg-gray-50 p-4 rounded-lg">
                   <h3 className="font-semibold text-gray-900 mb-2">{insight.title}</h3>
                   <p className="text-sm text-gray-600">{insight.description}</p>
                 </div>
@@ -613,42 +617,47 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
         {/* Schools Section */}
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Schools in {cityData.name}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {cityData.schools.map((school) => (
-            <Card key={school.id} className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105" onClick={() => setSelectedSchool(school)}>
-              <CardContent className="p-6 break-words">
-                <div className="text-center mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">{school.name}</h3>
-                  <p className="text-sm text-gray-600 mt-1 break-words">{school.description}</p>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex items-center text-sm">
-                    <MapPin className="h-4 w-4 text-gray-400 mr-2" />
-                    <span>{school.location}</span>
+          {cityData.schools.map((school, index) => (
+            <Card key={index} className="hover:shadow-lg transition-shadow" onClick={() => setSelectedSchool(school)}>
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle className="text-lg">{school.name}</CardTitle>
+                    <div className="flex items-center text-gray-600 mt-1">
+                      <MapPin className="h-4 w-4 mr-1" />
+                      {school.location}
+                    </div>
                   </div>
                   {school.ranking && (
-                    <div className="flex items-center text-sm">
-                      <Building2 className="h-4 w-4 text-gray-400 mr-2" />
-                      <span className="text-green-600 font-medium">{school.ranking}</span>
-                    </div>
-                  )}
-                  {school.tuition && (
-                    <div className="flex items-center text-sm">
-                      <Users className="h-4 w-4 text-gray-400 mr-2" />
-                      <span>{school.tuition}</span>
+                    <div className="flex items-center">
+                      <Star className="h-4 w-4 text-yellow-500 mr-1" />
+                      <span className="font-semibold">{school.ranking}</span>
                     </div>
                   )}
                 </div>
-                <div className="mt-4">
-                  <div className="text-xs text-gray-500 mb-2">Programs Offered:</div>
-                  <div className="flex flex-wrap gap-1">
-                    {school.programs.map((program) => (
-                      <span key={program} className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                        {program}
-                      </span>
-                    ))}
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">{school.description}</p>
+                <div className="space-y-3">
+                  <div className="flex items-center">
+                    <Users className="h-4 w-4 mr-2 text-blue-600" />
+                    <span className="text-sm">{school.tuition || 'Contact for details'}</span>
+                  </div>
+                  <div>
+                    <div className="flex items-center mb-2">
+                      <BookOpen className="h-4 w-4 mr-2 text-green-600" />
+                      <span className="text-sm font-medium">Programs:</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {school.programs.map((program, idx) => (
+                        <span key={idx} className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                          {program}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
-                <Button className="w-full mt-4" size="sm">View Details</Button>
+                <Button className="w-full mt-4">View Details</Button>
               </CardContent>
             </Card>
           ))}
@@ -684,24 +693,28 @@ export const SchoolSelector = ({ onBack, onSchoolSelect }: SchoolSelectorProps) 
     );
   }
 
+  // City Selection View
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="flex items-center mb-6">
-        <Button variant="ghost" onClick={() => selectedCity ? setSelectedCity(null) : onBack()} className="mr-4">
-          <ArrowLeft className="h-4 w-4 mr-2" /> Back to Checklist
+      <div className="mb-6">
+        <Button variant="outline" onClick={onBack} className="mb-4">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Checklist
         </Button>
-        <h1 className="text-2xl font-bold text-gray-900">Select Your City</h1>
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">🏫 School & Local Insights</h1>
+          <p className="text-lg text-gray-600">Explore French schools and get local insights for each city</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {Object.entries(cities).map(([cityKey, city]) => (
-          <Card key={cityKey} className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105" onClick={() => setSelectedCity(cityKey)}>
-            <CardContent className="p-6">
-              <div className="h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg mb-4 flex items-center justify-center">
-                <div className="text-xl font-bold text-white">{city.name}</div>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{city.name}</h3>
-              <p className="text-sm text-gray-600 mb-4">{city.description}</p>
+          <Card key={cityKey} className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedCity(cityKey)}>
+            <CardHeader>
+              <CardTitle className="text-lg">{city.name} {city.emoji}</CardTitle>
+              <p className="text-sm text-gray-600">{city.description}</p>
+            </CardHeader>
+            <CardContent>
               <div className="flex items-center justify-between">
                 <div className="flex gap-2">
                   <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">{city.schools.length} Schools</span>
