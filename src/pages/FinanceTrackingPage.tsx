@@ -1,45 +1,59 @@
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Euro, Calendar, FileText, AlertCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Euro, PiggyBank, Receipt, CreditCard } from 'lucide-react';
 
 interface FinanceTrackingPageProps {
   onBack: () => void;
+  onComplete: () => void;
+  isCompleted: boolean;
 }
 
-export const FinanceTrackingPage = ({ onBack }: FinanceTrackingPageProps) => {
-  const expenses = [
-    { category: "Tuition Fees", amount: "2,770", frequency: "Annual", due: "September" },
-    { category: "Accommodation", amount: "400-800", frequency: "Monthly", due: "1st of month" },
-    { category: "Food & Groceries", amount: "200-300", frequency: "Monthly", due: "Ongoing" },
-    { category: "Transportation", amount: "75", frequency: "Monthly", due: "Ongoing" },
-    { category: "Health Insurance", amount: "215", frequency: "Annual", due: "October" },
-    { category: "Phone & Internet", amount: "25-50", frequency: "Monthly", due: "Ongoing" }
-  ];
+export const FinanceTrackingPage = ({ onBack, onComplete, isCompleted }: FinanceTrackingPageProps) => {
+  const [completedSteps, setCompletedSteps] = useState<string[]>([]);
 
-  const documents = [
+  const financeSteps = [
     {
-      title: "Residence Permit Renewal",
-      deadline: "Before expiration (typically annual)",
-      cost: "€225",
-      description: "Required to continue studies in France"
+      id: 'budget-planning',
+      title: "Create Monthly Budget",
+      description: "Plan your monthly expenses including rent, food, transport",
+      icon: PiggyBank,
+      priority: "high"
     },
     {
-      title: "Student Insurance",
-      deadline: "Before academic year starts",
-      cost: "€215/year",
-      description: "Mandatory health insurance for students"
+      id: 'expense-tracking',
+      title: "Set Up Expense Tracking",
+      description: "Use apps like Bankin' or Linxo to track your spending",
+      icon: Receipt,
+      priority: "medium"
     },
     {
-      title: "University Enrollment",
-      deadline: "Summer (July-September)",
-      cost: "€2,770/year",
-      description: "Annual tuition fees for non-EU students"
+      id: 'student-discounts',
+      title: "Get Student Discount Cards",
+      description: "Apply for student transport cards and meal cards",
+      icon: CreditCard,
+      priority: "high"
+    },
+    {
+      id: 'emergency-fund',
+      title: "Build Emergency Fund",
+      description: "Save at least 500€ for unexpected expenses",
+      icon: Euro,
+      priority: "medium"
     }
   ];
 
+  const handleStepComplete = (stepId: string) => {
+    if (!completedSteps.includes(stepId)) {
+      setCompletedSteps([...completedSteps, stepId]);
+    }
+  };
+
+  const allStepsCompleted = completedSteps.length >= financeSteps.length;
+
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-4xl mx-auto">
       <div className="mb-6">
         <Button 
           variant="outline" 
@@ -55,96 +69,108 @@ export const FinanceTrackingPage = ({ onBack }: FinanceTrackingPageProps) => {
             📄 Tracking your Finances
           </h1>
           <p className="text-lg text-gray-600">
-            Important paperwork and renewal processes
+            Important paperwork and financial management
           </p>
+          {isCompleted && (
+            <div className="mt-4 bg-green-100 p-3 rounded-lg">
+              <div className="flex items-center justify-center">
+                <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
+                <span className="text-green-800 font-medium">Module Completed! You earned a key 🗝️</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div>
-          <h2 className="text-xl font-semibold mb-4 flex items-center">
-            <Euro className="h-5 w-5 mr-2 text-green-600" />
-            Monthly Budget Tracker
-          </h2>
-          <div className="space-y-3">
-            {expenses.map((expense, index) => (
-              <Card key={index}>
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-medium">{expense.category}</h3>
-                      <p className="text-sm text-gray-500">{expense.frequency}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold">€{expense.amount}</p>
-                      <p className="text-xs text-gray-500">{expense.due}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+      <div className="space-y-4">
+        {financeSteps.map((step, index) => {
+          const Icon = step.icon;
+          const isStepCompleted = completedSteps.includes(step.id);
           
-          <Card className="mt-4 bg-green-50">
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-green-900 mb-2">💰 Financial Aid</h3>
-              <ul className="text-sm text-green-800 space-y-1">
-                <li>• CAF Housing Allowance: €150-300/month</li>
-                <li>• Part-time work: Up to 20h/week allowed</li>
-                <li>• University scholarships available</li>
-                <li>• Student discounts on transport & culture</li>
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-4 flex items-center">
-            <FileText className="h-5 w-5 mr-2 text-blue-600" />
-            Important Renewals
-          </h2>
-          <div className="space-y-4">
-            {documents.map((doc, index) => (
-              <Card key={index} className="border-l-4 border-l-orange-500">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-lg">{doc.title}</CardTitle>
-                      <p className="text-gray-600 text-sm mt-1">{doc.description}</p>
+          return (
+            <Card key={index} className={`border-l-4 border-l-teal-500 ${isStepCompleted ? 'ring-2 ring-green-500' : ''}`}>
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-4 mt-1 ${
+                      isStepCompleted 
+                        ? 'bg-green-500 text-white' 
+                        : 'bg-gray-200 text-gray-600'
+                    }`}>
+                      {isStepCompleted ? <CheckCircle className="h-4 w-4" /> : index + 1}
                     </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-orange-600">{doc.cost}</p>
+                    <div className="flex-1">
+                      <CardTitle className="text-lg flex items-center">
+                        <Icon className="h-5 w-5 mr-2 text-teal-600" />
+                        {step.title}
+                      </CardTitle>
+                      <p className="text-gray-600 mt-1">{step.description}</p>
                     </div>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center text-sm text-gray-500">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Deadline: {doc.deadline}
+                  <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    step.priority === 'high' 
+                      ? 'bg-red-100 text-red-800' 
+                      : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {step.priority} priority
                   </div>
-                  <Button className="mt-3" size="sm" variant="outline">
-                    Set Reminder
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <Card className="mt-6 bg-red-50">
-            <CardContent className="p-4">
-              <div className="flex items-start">
-                <AlertCircle className="h-5 w-5 text-red-600 mr-2 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold text-red-900 mb-2">⚠️ Important</h3>
-                  <p className="text-red-800 text-sm">
-                    Missing renewal deadlines can result in legal complications and affect your ability to stay in France. 
-                    Set calendar reminders 2-3 months before each deadline.
-                  </p>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-end">
+                  {!isStepCompleted && (
+                    <Button 
+                      size="sm"
+                      onClick={() => handleStepComplete(step.id)}
+                    >
+                      Mark Complete
+                    </Button>
+                  )}
+                  {isStepCompleted && (
+                    <span className="text-green-600 text-sm font-medium">Completed</span>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      {allStepsCompleted && !isCompleted && (
+        <Card className="mt-8 bg-green-50 border-green-200">
+          <CardContent className="p-6 text-center">
+            <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-green-900 mb-2">
+              Financial Planning Complete!
+            </h3>
+            <p className="text-green-700 mb-4">
+              Great job! You've set up your financial tracking system.
+            </p>
+            <Button 
+              onClick={onComplete}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              Complete Module & Earn Key 🗝️
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      <Card className="mt-8 bg-teal-50">
+        <CardContent className="p-6">
+          <h3 className="font-semibold text-teal-900 mb-3">💰 Financial Tips for Students in France</h3>
+          <ul className="space-y-2 text-teal-800 text-sm">
+            <li>• Average monthly budget: 800-1200€ (varies by city)</li>
+            <li>• Use student restaurants (RU) for affordable meals (3.30€)</li>
+            <li>• Get a Navigo student transport card in Paris (75% discount)</li>
+            <li>• Look for part-time jobs (maximum 20h/week on student visa)</li>
+            <li>• Apply for APL housing assistance through CAF</li>
+          </ul>
+        </CardContent>
+      </Card>
+
+      <div className="mt-4 text-center text-sm text-gray-500">
+        Progress: {completedSteps.length} of {financeSteps.length} steps completed
       </div>
     </div>
   );

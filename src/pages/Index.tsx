@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
@@ -25,7 +26,7 @@ const Index = () => {
   const [currentPage, setCurrentPage] = useState('checklist');
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [userProgress, setUserProgress] = useState({
-    keys: 0, // Start with 0 keys
+    keys: 4, // Start with 4 keys
     completedModules: [],
     unlockedModules: ['school', 'pre-arrival-1', 'pre-arrival-2'], // Only first 3 modules unlocked
     currentPage: 'checklist'
@@ -96,6 +97,20 @@ const Index = () => {
     },
   ];
 
+  const sidebarPages = ['qa', 'hub', 'news', 'affiliation', 'language', 'translate', 'contact', 'profile', 'notifications', 'integration', 'documents'];
+  
+  const checkIfPageRequiresKey = (page: string) => {
+    return sidebarPages.includes(page) && userProgress.keys < 1;
+  };
+
+  const handlePageNavigation = (page: string) => {
+    if (checkIfPageRequiresKey(page)) {
+      alert('You need at least 1 key to access this page. Complete modules to earn keys!');
+      return;
+    }
+    setCurrentPage(page);
+  };
+
   const renderCurrentPage = () => {
     if (selectedSchool) {
       return (
@@ -120,13 +135,69 @@ const Index = () => {
       case 'school-insights':
         return <SchoolInsightsPage onBack={() => setCurrentPage('checklist')} />;
       case 'pre-arrival-1':
-        return <PreArrival1Page onBack={() => setCurrentPage('checklist')} />;
+        return (
+          <PreArrival1Page 
+            onBack={() => setCurrentPage('checklist')} 
+            onComplete={() => {
+              const newProgress = {
+                ...userProgress,
+                completedModules: [...userProgress.completedModules, 'pre-arrival-1'],
+                keys: userProgress.keys + 1
+              };
+              handleProgressUpdate(newProgress);
+              setCurrentPage('checklist');
+            }}
+            isCompleted={userProgress.completedModules.includes('pre-arrival-1')}
+          />
+        );
       case 'pre-arrival-2':
-        return <PreArrival2Page onBack={() => setCurrentPage('checklist')} />;
+        return (
+          <PreArrival2Page 
+            onBack={() => setCurrentPage('checklist')} 
+            onComplete={() => {
+              const newProgress = {
+                ...userProgress,
+                completedModules: [...userProgress.completedModules, 'pre-arrival-2'],
+                keys: userProgress.keys + 1
+              };
+              handleProgressUpdate(newProgress);
+              setCurrentPage('checklist');
+            }}
+            isCompleted={userProgress.completedModules.includes('pre-arrival-2')}
+          />
+        );
       case 'post-arrival':
-        return <PostArrivalPage onBack={() => setCurrentPage('checklist')} />;
+        return (
+          <PostArrivalPage 
+            onBack={() => setCurrentPage('checklist')} 
+            onComplete={() => {
+              const newProgress = {
+                ...userProgress,
+                completedModules: [...userProgress.completedModules, 'post-arrival'],
+                keys: userProgress.keys + 1
+              };
+              handleProgressUpdate(newProgress);
+              setCurrentPage('checklist');
+            }}
+            isCompleted={userProgress.completedModules.includes('post-arrival')}
+          />
+        );
       case 'finance-tracking':
-        return <FinanceTrackingPage onBack={() => setCurrentPage('checklist')} />;
+        return (
+          <FinanceTrackingPage 
+            onBack={() => setCurrentPage('checklist')} 
+            onComplete={() => {
+              const newProgress = {
+                ...userProgress,
+                completedModules: [...userProgress.completedModules, 'finance'],
+                keys: userProgress.keys + 1
+              };
+              handleProgressUpdate(newProgress);
+              setCurrentPage('checklist');
+            }}
+            isCompleted={userProgress.completedModules.includes('finance')}
+          />
+        );
       case 'qa':
         return <QAPage />;
       case 'hub':
@@ -165,11 +236,11 @@ const Index = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex w-full">
-        <AppSidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+        <AppSidebar currentPage={currentPage} setCurrentPage={handlePageNavigation} />
         <div className="flex-1 flex flex-col">
           <Header 
             currentPage={currentPage} 
-            setCurrentPage={setCurrentPage}
+            setCurrentPage={handlePageNavigation}
             userProgress={userProgress}
           />
           <main className="flex-1 p-4 md:p-6 overflow-auto">
