@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
@@ -15,6 +16,11 @@ import { SchoolDetails } from '@/components/SchoolDetails';
 import { FrenchIntegrationPage } from '@/components/FrenchIntegrationPage';
 import { DocumentsPage } from '@/components/DocumentsPage';
 import { Header } from '@/components/Header';
+import { SchoolInsightsPage } from './SchoolInsightsPage';
+import { PreArrival1Page } from './PreArrival1Page';
+import { PreArrival2Page } from './PreArrival2Page';
+import { PostArrivalPage } from './PostArrivalPage';
+import { FinanceTrackingPage } from './FinanceTrackingPage';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState('checklist');
@@ -113,6 +119,16 @@ const Index = () => {
             currentPage={currentPage}
           />
         );
+      case 'school-insights':
+        return <SchoolInsightsPage onBack={() => setCurrentPage('checklist')} />;
+      case 'pre-arrival-1':
+        return <PreArrival1Page onBack={() => setCurrentPage('checklist')} />;
+      case 'pre-arrival-2':
+        return <PreArrival2Page onBack={() => setCurrentPage('checklist')} />;
+      case 'post-arrival':
+        return <PostArrivalPage onBack={() => setCurrentPage('checklist')} />;
+      case 'finance-tracking':
+        return <FinanceTrackingPage onBack={() => setCurrentPage('checklist')} />;
       case 'qa':
         return <QAPage />;
       case 'hub':
